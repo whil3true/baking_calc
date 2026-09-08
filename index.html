@@ -2,46 +2,89 @@
 <html lang="ru">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>BakeCalc — Кондитерский калькулятор</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="BakeCalc — набор бесплатных инструментов для кондитеров: пересчет рецептов, формы и себестоимости десертов.">
+<title>BakeCalc — инструменты для кондитеров</title>
 <script src="https://cdn.tailwindcss.com"></script>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/inter@5.0.8/index.css">
 <link rel="stylesheet" href="css/styles.css">
 <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
 <script>
-  tailwind.config = {
-    theme: {
-      extend: {
-        colors: { cream: '#FBF9F5', caramel: '#D97736', terracotta: '#C86D51', dark: '#2E282A', soft: '#F5EFE6' },
-        fontFamily: { sans: ['Inter', 'system-ui', 'sans-serif'] }
-      }
-    }
-  }
+  tailwind.config = { theme: { extend: { colors: { cream: '#FBF9F5', caramel: '#D97736', terracotta: '#C86D51', dark: '#2E282A', soft: '#F5EFE6' }, fontFamily: { sans: ['Inter', 'system-ui', 'sans-serif'] } } } };
 </script>
 </head>
-<body class="min-h-screen w-full max-w-full overflow-x-hidden box-border">
+<body class="min-h-screen bg-cream text-dark font-sans">
+<header class="sticky top-0 z-30 bg-cream/90 backdrop-blur-md border-b border-soft">
+  <div class="max-w-5xl mx-auto px-4 py-4">
+    <div class="flex items-center gap-3">
+      <div class="w-11 h-11 rounded-2xl bg-gradient-to-br from-caramel to-terracotta flex items-center justify-center shadow-sm">
+        <i data-lucide="cake-slice" class="w-6 h-6 text-white"></i>
+      </div>
+      <div>
+        <h1 class="text-xl md:text-2xl font-bold tracking-tight">BakeCalc</h1>
+        <p class="text-xs md:text-sm text-dark/60">Инструменты для кондитеров</p>
+      </div>
+    </div>
+  </div>
+</header>
+<main class="max-w-5xl mx-auto px-4 py-8 md:py-12">
+  <section class="text-center max-w-2xl mx-auto mb-8 md:mb-10">
+    <div class="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-soft mb-4">
+      <i data-lucide="calculator" class="w-7 h-7 text-caramel"></i>
+    </div>
+    <h2 class="text-2xl md:text-4xl font-bold tracking-tight mb-3">Что будем считать?</h2>
+    <p class="text-sm md:text-base text-dark/60">Выберите нужный инструмент. Остальное мы постепенно достроим, потому что один калькулятор на весь кондитерский мир был бы слишком оптимистичным.</p>
+  </section>
 
-<div id="toast" class="fixed top-4 left-1/2 -translate-x-1/2 z-50 bg-dark text-cream px-5 py-3 rounded-2xl shadow-lg flex items-center gap-2 transition-all duration-300 translate-y-[-200%] opacity-0 pointer-events-none"><i data-lucide="check-circle-2" class="w-5 h-5 text-caramel"></i><span id="toastText" class="font-medium">Скопировано в буфер!</span></div>
+  <section aria-labelledby="tools-title">
+    <h2 id="tools-title" class="sr-only">Инструменты BakeCalc</h2>
+    <div class="grid grid-cols-2 md:grid-cols-3 gap-3 md:gap-5">
+      <a href="bakecalc.html" class="tool-tile group" aria-label="BakeCalc — пересчет рецепта и себестоимость">
+        <div class="tool-icon"><i data-lucide="cake-slice"></i></div>
+        <h3 class="tool-title">BakeCalc</h3>
+        <p class="tool-description">Пересчет рецепта под другую форму и расчет себестоимости</p>
+        <span class="tool-status">Открыть</span>
+      </a>
+      <a href="#" class="tool-tile tool-tile-soon group" aria-label="CreamCalc — скоро">
+        <div class="tool-icon"><i data-lucide="cup-soda"></i></div>
+        <h3 class="tool-title">CreamCalc</h3>
+        <p class="tool-description">Расчет количества крема для торта</p>
+        <span class="tool-status">Скоро</span>
+      </a>
+      <a href="#" class="tool-tile tool-tile-soon group" aria-label="Калькулятор порций — скоро">
+        <div class="tool-icon"><i data-lucide="users"></i></div>
+        <h3 class="tool-title">Порции</h3>
+        <p class="tool-description">Расчет размера торта по количеству гостей</p>
+        <span class="tool-status">Скоро</span>
+      </a>
+      <a href="#" class="tool-tile tool-tile-soon group" aria-label="Калькулятор желатина — скоро">
+        <div class="tool-icon"><i data-lucide="flask-conical"></i></div>
+        <h3 class="tool-title">Желатин</h3>
+        <p class="tool-description">Расчет желатина и силы желирования</p>
+        <span class="tool-status">Скоро</span>
+      </a>
+      <a href="#" class="tool-tile tool-tile-soon group" aria-label="Конвертер ингредиентов — скоро">
+        <div class="tool-icon"><i data-lucide="arrow-left-right"></i></div>
+        <h3 class="tool-title">Конвертер</h3>
+        <p class="tool-description">Граммы, миллилитры, килограммы и литры</p>
+        <span class="tool-status">Скоро</span>
+      </a>
+      <a href="#" class="tool-tile tool-tile-soon group" aria-label="Цена продажи — скоро">
+        <div class="tool-icon"><i data-lucide="badge-russian-ruble"></i></div>
+        <h3 class="tool-title">Цена продажи</h3>
+        <p class="tool-description">Расчет цены с учетом наценки и расходов</p>
+        <span class="tool-status">Скоро</span>
+      </a>
+    </div>
+  </section>
 
-<header class="sticky top-0 z-30 bg-cream/90 backdrop-blur-md border-b border-soft"><div class="max-w-3xl mx-auto px-4 py-4"><div class="flex items-center justify-between gap-3"><div class="flex items-center gap-3 min-w-0"><div class="w-11 h-11 rounded-2xl bg-gradient-to-br from-caramel to-terracotta flex items-center justify-center flex-shrink-0 shadow-sm"><i data-lucide="cake-slice" class="w-6 h-6 text-white"></i></div><div class="min-w-0"><h1 class="text-xl md:text-2xl font-bold tracking-tight truncate">BakeCalc</h1><p class="text-xs md:text-sm text-dark/60 truncate">Умный пересчет форм и себестоимости десертов</p></div></div><button onclick="clearAll()" class="btn-ghost px-3 py-2 rounded-xl text-sm font-medium flex items-center gap-1.5 text-red-500 border-red-200 hover:bg-red-50" title="Очистить все"><i data-lucide="trash-2" class="w-4 h-4"></i><span class="hidden sm:inline">Очистить</span></button></div></div></header>
-
-<main class="max-w-3xl mx-auto px-4 py-5 md:py-8 space-y-5 w-full max-w-full overflow-hidden box-border">
-<section class="card p-5 md:p-6 fade-in"><div class="flex items-start gap-3 mb-5"><div class="step-number">1</div><div class="flex-1 min-w-0"><h2 class="text-lg font-semibold mb-1">Исходный рецепт и ингредиенты</h2><p class="text-sm text-dark/60">Введите ингредиенты из оригинального рецепта</p></div></div><label class="block mb-4"><span class="text-sm font-medium mb-2 block">Название рецепта <span class="text-dark/40 font-normal">(необязательно)</span></span><input type="text" id="recipeNameInput" placeholder="Например: Морковный торт" oninput="onRecipeNameInput(this.value)" class="input-field w-full"></label><div class="overflow-x-auto scrollbar-hide -mx-5 md:-mx-6 px-5 md:px-6 mb-4"><table class="w-full text-sm"><thead><tr class="text-xs uppercase tracking-wider text-dark/50 border-b border-soft"><th class="text-left py-2 pr-2 font-semibold">Название</th><th class="text-left py-2 px-2 font-semibold">Кол-во</th><th class="text-left py-2 px-2 font-semibold">Ед.</th><th class="w-8"></th></tr></thead><tbody id="ingredientsBody"></tbody></table><div id="ingredientsPlaceholder" class="text-center py-10 text-dark/40"><div class="flex flex-col items-center gap-2"><i data-lucide="package-open" class="w-10 h-10 text-dark/20"></i><div class="text-sm">Нет ингредиентов</div><div class="text-xs">Добавьте первый ингредиент или загрузите демо-рецепт</div></div></div></div><button onclick="addIngredient()" class="w-full btn-ghost py-3 rounded-xl text-sm font-medium flex items-center justify-center gap-2 hover:border-caramel hover:text-caramel mb-4"><i data-lucide="plus" class="w-4 h-4"></i>Добавить ингредиент</button><button onclick="loadDemoRecipe()" class="w-full btn-ghost py-3 rounded-xl text-sm font-medium flex items-center justify-center gap-2 hover:border-caramel hover:text-caramel mb-4"><i data-lucide="sparkles" class="w-4 h-4"></i>Загрузить тестовый рецепт</button><div class="border-t border-soft pt-4"><button onclick="togglePricesAccordion()" class="w-full flex items-center justify-between text-left group"><div class="flex items-center gap-2"><i data-lucide="coins" class="w-4 h-4 text-dark/50 group-hover:text-caramel transition-colors"></i><span class="text-sm font-medium">Указать цены ингредиентов для расчета себестоимости</span></div><i data-lucide="chevron-down" id="pricesAccordionIcon" class="w-4 h-4 text-dark/50 transition-transform duration-300"></i></button><div id="pricesAccordionContent" class="hidden mt-4 slide-up"><div class="overflow-x-auto scrollbar-hide -mx-5 md:-mx-6 px-5 md:px-6"><table class="w-full text-sm"><thead><tr class="text-xs uppercase tracking-wider text-dark/50 border-b border-soft"><th class="text-left py-2 pr-2 font-semibold">Ингредиент</th><th class="text-left py-2 px-2 font-semibold">Цена, ₽</th><th class="text-left py-2 px-2 font-semibold">Вес упак.</th><th class="text-left py-2 pl-2 font-semibold">Ед.</th></tr></thead><tbody id="pricesBody"></tbody></table><div id="pricesPlaceholder" class="text-center py-8 text-dark/40 text-sm">Сначала добавьте ингредиенты</div></div></div></div></section>
-
-<section class="card p-5 md:p-6 fade-in"><div class="flex items-start gap-3 mb-5"><div class="step-number">2</div><div class="flex-1 min-w-0"><h2 class="text-lg font-semibold mb-1">Размер исходной формы</h2><p class="text-sm text-dark/60">Под какую форму рассчитан оригинальный рецепт?</p></div></div><div id="originalFormTabs" class="flex gap-2 mb-3"></div><div id="originalFormFields"></div><div class="mt-4 pt-4 border-t border-soft"><label class="flex items-center gap-3 cursor-pointer select-none group"><input type="checkbox" id="useHeightOriginal" onchange="toggleHeight('original')" class="w-5 h-5 checkbox-caramel rounded cursor-pointer"><div class="flex items-center gap-2"><i data-lucide="move-vertical" class="w-4 h-4 text-dark/50 group-hover:text-caramel transition-colors"></i><span class="text-sm font-medium">Учесть высоту бортиков</span></div></label></div></section>
-
-<section class="card p-5 md:p-6 fade-in"><div class="flex items-start gap-3 mb-5"><div class="step-number">3</div><div class="flex-1 min-w-0"><h2 class="text-lg font-semibold mb-1">Размер вашей новой формы</h2><p class="text-sm text-dark/60">В какой форме вы будете готовить?</p></div></div><div id="newFormTabs" class="flex gap-2 mb-3"></div><div id="newFormFields"></div><div class="mt-4 pt-4 border-t border-soft"><label class="flex items-center gap-3 cursor-pointer select-none group"><input type="checkbox" id="useHeightNew" onchange="toggleHeight('new')" class="w-5 h-5 checkbox-caramel rounded cursor-pointer"><div class="flex items-center gap-2"><i data-lucide="move-vertical" class="w-4 h-4 text-dark/50 group-hover:text-caramel transition-colors"></i><span class="text-sm font-medium">Учесть высоту бортиков</span></div></label></div></section>
-
-<section class="card p-5 md:p-6 fade-in"><div class="flex items-start gap-3 mb-5"><div class="flex items-center justify-center w-8 h-8 rounded-full bg-soft flex-shrink-0"><i data-lucide="receipt" class="w-4 h-4 text-caramel"></i></div><div class="flex-1 min-w-0"><h2 class="text-lg font-semibold mb-1">Дополнительные расходы</h2><p class="text-sm text-dark/60">Упаковка, декор, доставка и другие затраты</p></div></div><div id="extraCostsContainer" class="space-y-3 mb-4"></div><button onclick="addExtraCost()" class="w-full btn-ghost py-3 rounded-xl text-sm font-medium flex items-center justify-center gap-2 hover:border-caramel hover:text-caramel"><i data-lucide="plus" class="w-4 h-4"></i>Добавить расход</button><div class="mt-4 pt-4 border-t border-soft flex items-center justify-between"><span class="text-sm font-medium text-dark/70">Сумма доп. расходов</span><span class="text-lg font-bold text-caramel" id="extraCostsTotal">0.00 ₽</span></div></section>
-
-<div id="yandex_rtb_1" class="w-full flex justify-center my-0"></div>
-<button onclick="calculateRecipe()" class="w-full btn-primary py-5 rounded-2xl font-bold text-lg flex items-center justify-center gap-3 shadow-md hover:shadow-lg transition-all"><i data-lucide="calculator" class="w-6 h-6"></i>Рассчитать новый рецепт</button>
-
-<section id="resultsSection" class="hidden"><div class="card p-5 md:p-6 slide-up"><div class="flex items-start gap-3 mb-5"><div class="step-number bg-gradient-to-br from-caramel to-terracotta">✓</div><div class="flex-1 min-w-0"><h2 class="text-lg font-semibold mb-1">Ваш пересчитанный рецепт</h2><p class="text-sm text-dark/60">Готово! Вот новые пропорции для вашей формы</p></div></div><div class="mb-5"><div id="resultCoefficientBadge" class="bg-caramel/10 text-caramel px-4 py-3 rounded-2xl font-semibold text-sm inline-flex items-center gap-2"><i data-lucide="calculator" class="w-4 h-4"></i><span>Коэффициент: ×1.00 (порция увеличена на 0%)</span></div></div><div class="overflow-x-auto scrollbar-hide -mx-5 md:-mx-6 px-5 md:px-6 mb-4"><table class="result-table w-full text-left"><thead><tr><th class="rounded-tl-xl">Ингредиент</th><th class="text-right rounded-tr-xl">Новое количество</th></tr></thead><tbody id="resultsBody"></tbody></table></div><label class="flex items-center gap-3 cursor-pointer select-none group mb-4"><input type="checkbox" id="roundResultsCheckbox" onchange="toggleRoundResults()" class="w-5 h-5 checkbox-caramel rounded cursor-pointer"><span class="text-sm font-medium">Округлять до целых чисел</span></label><div class="grid grid-cols-2 gap-3 mb-4"><div class="bg-soft/40 rounded-xl p-3"><div class="text-xs text-dark/50 mb-1">Позиций</div><div class="text-lg font-bold" id="resultItemsCount">0</div></div><div class="bg-soft/40 rounded-xl p-3"><div class="text-xs text-dark/50 mb-1">Вес ингредиентов (г)</div><div class="text-lg font-bold text-caramel" id="resultTotalWeight">0 г</div></div></div><div id="resultCostSection" class="hidden mb-4"><div class="bg-soft/40 rounded-xl p-4 space-y-2"><div class="flex items-center gap-2 mb-3"><i data-lucide="wallet" class="w-5 h-5 text-caramel"></i><span class="font-semibold">Себестоимость</span></div><div class="flex items-center justify-between text-sm"><span class="text-dark/70">Ингредиенты</span><span class="font-medium" id="resultIngredientsCost">0.00 ₽</span></div><div class="flex items-center justify-between text-sm"><span class="text-dark/70">Доп. расходы</span><span class="font-medium" id="resultExtraCostsTotal">0.00 ₽</span></div><div class="border-t border-dark/10 pt-2 flex items-center justify-between"><span class="font-semibold">ИТОГО</span><span class="text-xl font-bold text-caramel" id="resultTotalCost">0.00 ₽</span></div></div></div><div class="flex flex-col sm:flex-row gap-3 pt-4 border-t border-soft"><button onclick="copyRecipe()" class="flex-1 btn-primary py-3 rounded-xl font-semibold flex items-center justify-center gap-2"><i data-lucide="copy" class="w-5 h-5"></i>Скопировать рецепт</button><button onclick="recalculate()" class="flex-1 btn-ghost py-3 rounded-xl font-semibold flex items-center justify-center gap-2"><i data-lucide="refresh-cw" class="w-5 h-5"></i>Пересчитать заново</button></div></div></section>
-<div id="yandex_rtb_2" class="w-full flex justify-center my-0"></div>
+  <section class="mt-8 md:mt-10 text-center">
+    <p class="text-xs text-dark/40">BakeCalc развивается как набор простых бесплатных инструментов для кондитеров.</p>
+  </section>
 </main>
-
-<script src="js/app.js"></script>
+<script>
+  document.addEventListener('DOMContentLoaded', () => lucide.createIcons());
+</script>
 <script src="js/analytics.js"></script>
 <noscript><div><img src="https://mc.yandex.ru/watch/112356971" style="position:absolute; left:-9999px;" alt="" /></div></noscript>
 </body>
