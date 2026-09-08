@@ -296,7 +296,7 @@
           <div class="text-lg font-bold" id="resultItemsCount">0</div>
         </div>
         <div class="bg-soft/40 rounded-xl p-3">
-          <div class="text-xs text-dark/50 mb-1">Общий вес</div>
+          <div class="text-xs text-dark/50 mb-1">Вес ингредиентов (г)</div>
           <div class="text-lg font-bold text-caramel" id="resultTotalWeight">0 г</div>
         </div>
       </div>
@@ -417,20 +417,13 @@ function generateId() {
 }
 
 /* Конвертация единиц измерения в базовые (г или мл) */
-function convertToBaseUnit(value, unit, packageUnit) {
-  // Если единицы совпадают - просто возвращаем значение
-  if (unit === packageUnit) return value;
-  
-  // Конвертация массы
-  if (packageUnit === 'кг' && unit === 'г') return value / 1000;
-  if (packageUnit === 'г' && unit === 'кг') return value * 1000;
-  
-  // Конвертация объема
-  if (packageUnit === 'л' && unit === 'мл') return value / 1000;
-  if (packageUnit === 'мл' && unit === 'л') return value * 1000;
-  
-  // Если единицы несовместимы (например, г и мл), возвращаем 1 (считаем 1:1)
-  return value;
+function convertPackageToIngredientUnit(value, packageUnit, ingredientUnit) {
+  if (packageUnit === ingredientUnit) return value;
+  if (packageUnit === 'кг' && ingredientUnit === 'г') return value * 1000;
+  if (packageUnit === 'г' && ingredientUnit === 'кг') return value / 1000;
+  if (packageUnit === 'л' && ingredientUnit === 'мл') return value * 1000;
+  if (packageUnit === 'мл' && ingredientUnit === 'л') return value / 1000;
+  return null;
 }
 
 /* =========================================================
@@ -465,15 +458,14 @@ function calculateIngredientsCost() {
   let total = 0;
   state.ingredients.forEach(ing => {
     const newAmount = validateNumber(ing.amount, 0) * k;
-    const pkgW = validateNumber(ing.packageWeight, 1);
-    const pkgUnit = ing.packageUnit || 'г';
-    const ingUnit = ing.unit || 'г';
-    
-    // Конвертируем вес упаковки в единицы ингредиента
-    const convertedPkgW = convertToBaseUnit(pkgW, ingUnit, pkgUnit);
-    
-    const costPerUnit = convertedPkgW > 0 ? validateNumber(ing.price, 0) / convertedPkgW : 0;
-    total += costPerUnit * newAmount;
+    const packageAmount = validateNumber(ing.packageWeight, 0);
+    const packageUnit = ing.packageUnit || ing.unit || 'г';
+    const ingredientUnit = ing.unit || 'г';
+    const price = validateNumber(ing.price, 0);
+    if (newAmount <= 0 || packageAmount <= 0 || price <= 0) return;
+    const packageInIngredientUnits = convertPackageToIngredientUnit(packageAmount, packageUnit, ingredientUnit);
+    if (packageInIngredientUnits === null || packageInIngredientUnits <= 0) return;
+    total += (price / packageInIngredientUnits) * newAmount;
   });
   return total;
 }
@@ -493,9 +485,11 @@ function calculateTotalCost() {
 function calculateTotalWeight() {
   if (!state.result) return 0;
   const k = state.result.coefficient;
-  let total = 0;
-  state.ingredients.forEach(ing => { total += validateNumber(ing.amount, 0) * k; });
-  return state.result.roundResults ? Math.round(total) : Number(total.toFixed(1));
+  let totalGrams = 0;
+  state.ingredients.forEach(ing => {
+    if ((ing.unit || 'г') === 'г') totalGrams += validateNumber(ing.amount, 0) * k;
+  });
+  return state.result.roundResults ? Math.round(totalGrams) : Number(totalGrams.toFixed(1));
 }
 
 /* =========================================================
@@ -594,7 +588,7 @@ function createIngredientRow(ing, idx) {
         class="input-field w-full !h-11 !text-sm min-w-0">
     </td>
     <td class="py-2 px-2">
-      <input type="number" step="any" min="0" inputmode="decimal" value="" placeholder="0"
+      <input type="number" step="any" min="0" inputmode="decimal" value="${ing.amount}" placeholder="0"
         oninput="onIngredientInput(${ing.id}, 'amount', parseFloat(this.value) || 0)"
         class="input-field w-20 !h-11 !text-sm min-w-0">
     </td>
@@ -623,12 +617,12 @@ function createPriceRow(ing) {
   tr.innerHTML = `
     <td class="py-2 pr-2 text-sm" data-name-cell>${escapeHtml(ing.name) || '—'}</td>
     <td class="py-2 px-2">
-      <input type="number" step="any" min="0" inputmode="decimal" value="" placeholder="0.00"
+      <input type="number" step="any" min="0" inputmode="decimal" value="${ing.price}" placeholder="0.00"
         oninput="onIngredientInput(${ing.id}, 'price', parseFloat(this.value) || 0)"
         class="input-field !h-10 !text-sm w-20 min-w-0">
     </td>
     <td class="py-2 px-2">
-      <input type="number" step="any" min="0" inputmode="decimal" value="" placeholder="0"
+      <input type="number" step="any" min="0" inputmode="decimal" value="${ing.packageWeight}" placeholder="0"
         oninput="onIngredientInput(${ing.id}, 'packageWeight', parseFloat(this.value) || 0)"
         class="input-field !h-10 !text-sm w-16 min-w-0">
     </td>
@@ -757,7 +751,7 @@ function createExtraCostRow(cost) {
     <input type="text" value="${escapeHtml(cost.name)}" placeholder="Название расхода"
       oninput="onExtraCostInput(${cost.id}, 'name', this.value)"
       class="input-field flex-1 min-w-0 !h-11 !text-sm order-1 sm:order-none">
-    <input type="number" step="any" min="0" inputmode="decimal" value="" placeholder="0.00"
+    <input type="number" step="any" min="0" inputmode="decimal" value="${cost.amount}" placeholder="0.00"
       oninput="onExtraCostInput(${cost.id}, 'amount', parseFloat(this.value) || 0)"
       class="input-field w-24 sm:w-28 shrink-0 min-w-0 !h-11 !text-sm order-2 sm:order-none">
     <button onclick="deleteExtraCost(${cost.id})" class="w-8 h-8 shrink-0 flex items-center justify-center text-dark/30 hover:text-red-500 transition-colors order-3 sm:order-none" title="Удалить">
@@ -1037,7 +1031,7 @@ function generateRecipeText() {
     });
   }
   text += '───────────────────────────────\n';
-  text += `⚖️ Общий вес: ${calculateTotalWeight()} г\n`;
+  text += `⚖️ Вес ингредиентов (г): ${calculateTotalWeight()} г\n`;
   
   const ingredientsCost = calculateIngredientsCost();
   const extraCostsTotal = calculateExtraCostsTotal();
