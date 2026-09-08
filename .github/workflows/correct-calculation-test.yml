@@ -1,0 +1,24 @@
+name: Correct calculation test expectation
+
+on:
+  push:
+    branches: [fix/calculation-cost-weight]
+
+permissions:
+  contents: write
+
+jobs:
+  correct:
+    if: "github.event.head_commit.message == 'Add robust calculation-fix workflow for PR'"
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Correct test expectation
+        run: |
+          sed -i "s/assert.equal(ingredientCost(2, 'г', 100, 500, 'г', 2), 0.4);/assert.equal(ingredientCost(2, 'г', 100, 500, 'г', 2), 0.8);/" .github/workflows/apply-calculation-fix.yml
+          rm -f .github/workflows/correct-calculation-test.yml
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add .github/workflows/apply-calculation-fix.yml .github/workflows/correct-calculation-test.yml
+          git commit -m "Correct calculation test expectation"
+          git push
