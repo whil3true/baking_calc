@@ -1,0 +1,138 @@
+name: Fix BakeCalc calculations
+
+on:
+  push:
+    branches: [main]
+
+permissions:
+  contents: write
+
+jobs:
+  fix:
+    if: "!contains(github.event.head_commit.message, 'Fix BakeCalc calculations')"
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Fix calculations
+        run: |
+          python3 <<'PY'
+          from pathlib import Path
+
+          path = Path('index.html')
+          text = path.read_text(encoding='utf-8')
+
+          old_unit = '''function convertToBaseUnit(value, unit, packageUnit) {
+            // Если единицы совпадают - просто возвращаем значение
+            if (unit === packageUnit) return value;
+            
+            // Конвертация массы
+            if (packageUnit === 'кг' && unit === 'г') return value / 1000;
+            if (packageUnit === 'г' && unit === 'кг') return value * 1000;
+            
+            // Конвертация объема
+            if (packageUnit === 'л' && unit === 'мл') return value / 1000;
+            if (packageUnit === 'мл' && unit === 'л') return value * 1000;
+            
+            // Если единицы несовместимы (например, г и мл), возвращаем 1 (считаем 1:1)
+            return value;
+          }'''
+
+          new_unit = '''function convertPackageToIngredientUnit(value, packageUnit, ingredientUnit) {
+            // Одинаковые единицы можно использовать напрямую.
+            if (packageUnit === ingredientUnit) return value;
+
+            // Масса: упаковка -> единица ингредиента.
+            if (packageUnit === 'кг' && ingredientUnit === 'г') return value * 1000;
+            if (packageUnit === 'г' && ingredientUnit === 'кг') return value / 1000;
+
+            // Объем: упаковка -> единица ингредиента.
+            if (packageUnit === 'л' && ingredientUnit === 'мл') return value * 1000;
+            if (packageUnit === 'мл' && ingredientUnit === 'л') return value / 1000;
+
+            // Штуки нельзя смешивать с массой или объемом.
+            return null;
+          }'''
+
+          if old_unit not in text:
+              raise SystemExit('Не найден блок convertToBaseUnit')
+          text = text.replace(old_unit, new_unit, 1)
+
+          old_cost = '''    // Конвертируем вес упаковки в единицы ингредиента
+    const convertedPkgW = convertToBaseUnit(pkgW, ingUnit, pkgUnit);
+    
+    const costPerUnit = convertedPkgW > 0 ? validateNumber(ing.price, 0) / convertedPkgW : 0;
+    total += costPerUnit * newAmount;'''
+
+          new_cost = '''    // Переводим количество в упаковке в единицы, в которых указан ингредиент.
+    // Например: 1 кг упаковки = 1000 г ингредиента.
+    const convertedPkgW = convertPackageToIngredientUnit(pkgW, pkgUnit, ingUnit);
+    const price = validateNumber(ing.price, 0);
+
+    // Несовместимые единицы (например, г и мл) не смешиваем 1:1.
+    if (convertedPkgW !== null && convertedPkgW > 0 && price > 0) {
+      const costPerUnit = price / convertedPkgW;
+      total += costPerUnit * newAmount;
+    }'''
+
+          if old_cost not in text:
+              raise SystemExit('Не найден блок расчета стоимости')
+          text = text.replace(old_cost, new_cost, 1)
+
+          old_weight = '''function calculateTotalWeight() {
+            if (!state.result) return 0;
+            const k = state.result.coefficient;
+            let total = 0;
+            state.ingredients.forEach(ing => { total += validateNumber(ing.amount, 0) * k; });
+            return state.result.roundResults ? Math.round(total) : Number(total.toFixed(1));
+          }'''
+
+          new_weight = '''function calculateTotalWeight() {
+            if (!state.result) return 0;
+            const k = state.result.coefficient;
+            let totalGrams = 0;
+
+            state.ingredients.forEach(ing => {
+              const amount = validateNumber(ing.amount, 0) * k;
+
+              // В общий вес включаем только ингредиенты, заданные в граммах.
+              // мл и шт нельзя корректно складывать с граммами без знания плотности/массы.
+              if ((ing.unit || 'г') === 'г') {
+                totalGrams += amount;
+              }
+            });
+
+            return state.result.roundResults
+              ? Math.round(totalGrams)
+              : Number(totalGrams.toFixed(1));
+          }'''
+
+          if old_weight not in text:
+              raise SystemExit('Не найден блок расчета общего веса')
+          text = text.replace(old_weight, new_weight, 1)
+
+          old_label = '<div class="text-xs text-dark/50 mb-1">Общий вес</div>'
+          new_label = '<div class="text-xs text-dark/50 mb-1">Общий вес (г)</div>'
+          if old_label not in text:
+              raise SystemExit('Не найден заголовок общего веса')
+          text = text.replace(old_label, new_label, 1)
+
+          old_copy = "text += `⚖️ Общий вес: ${calculateTotalWeight()} г\\n`;"
+          new_copy = "text += `⚖️ Общий вес (ингредиенты в г): ${calculateTotalWeight()} г\\n`;"
+          if old_copy not in text:
+              raise SystemExit('Не найдена строка общего веса в копировании')
+          text = text.replace(old_copy, new_copy, 1)
+
+          path.write_text(text, encoding='utf-8')
+          PY
+
+      - name: Commit fixes and remove temporary workflow
+        run: |
+          rm -f .github/workflows/fix-calculations.yml
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add index.html .github/workflows/fix-calculations.yml
+          git diff --cached --quiet && exit 0
+          git commit -m "Fix BakeCalc calculations"
+          git push
