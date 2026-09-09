@@ -1,0 +1,31 @@
+name: Refactor BakeCalc runtime once
+
+on:
+  push:
+    branches: [refactor/bakecalc-state-runtime]
+    paths:
+      - tools/refactor-bakecalc-runtime.cjs
+      - .github/workflows/refactor-bakecalc-runtime.yml
+
+permissions:
+  contents: write
+
+jobs:
+  migrate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout branch
+        uses: actions/checkout@v4
+        with:
+          ref: refactor/bakecalc-state-runtime
+      - name: Apply runtime refactor
+        run: node tools/refactor-bakecalc-runtime.cjs
+      - name: Remove one-shot migration files
+        run: git rm tools/refactor-bakecalc-runtime.cjs .github/workflows/refactor-bakecalc-runtime.yml
+      - name: Commit migration
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add js/app.js js/bakecalc-hardening.js js/analytics.js bakecalc.html docs/repository-review.md
+          git commit -m "refactor: separate BakeCalc state and runtime loading"
+          git push origin HEAD:refactor/bakecalc-state-runtime
