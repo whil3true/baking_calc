@@ -33,6 +33,34 @@ async function runSmoke(name, path, action, resultSelector, valueSelector) {
   }
 }
 
+async function runBakeCalcDelegatedEvents() {
+  const page = await browser.newPage();
+  const pageErrors = [];
+  page.on('pageerror', error => pageErrors.push(error.message));
+  try {
+    await page.goto(`${baseURL}/bakecalc.html`, { waitUntil: 'domcontentloaded' });
+
+    await page.getByRole('button', { name: 'Добавить ингредиент' }).click();
+    const ingredientRow = page.locator('#ingredientsBody tr').last();
+    await ingredientRow.locator('[data-field="name"]').fill('Тестовая мука');
+    await ingredientRow.locator('[data-field="amount"]').fill('125');
+    assert.equal(await page.locator('#pricesBody tr').last().locator('[data-name-cell]').textContent(), 'Тестовая мука');
+
+    await page.locator('#originalFormTabs [data-form-type="rect"]').click();
+    await page.locator('#originalFormFields [data-field="length"]').waitFor({ state: 'visible' });
+    await page.locator('#originalFormFields [data-field="length"]').fill('22');
+    await page.locator('#originalFormFields [data-field="width"]').fill('18');
+
+    await page.locator('#useHeightOriginal').check();
+    await page.locator('#originalFormFields [data-field="height"]').waitFor({ state: 'visible' });
+
+    assert.deepEqual(pageErrors, [], `BakeCalc delegated events: browser JavaScript errors: ${pageErrors.join(' | ')}`);
+    console.log('✓ BakeCalc delegated events: dynamic input, form switch and height toggle');
+  } finally {
+    await page.close();
+  }
+}
+
 async function runBakeCalcPriceCalcIntegration() {
   const page = await browser.newPage();
   const pageErrors = [];
@@ -76,6 +104,7 @@ try {
     await page.getByRole('button', { name: 'Рассчитать новый рецепт' }).click();
   }, '#resultsSection', '#resultCoefficientBadge');
 
+  await runBakeCalcDelegatedEvents();
   await runSmoke('CreamCalc', 'creamcalc.html', page => page.getByRole('button', { name: 'Рассчитать крем' }).click(), '#creamResults', '#creamPrepare');
   await runSmoke('PortionCalc', 'portioncalc.html', page => page.getByRole('button', { name: 'Рассчитать размер торта' }).click(), '#portionResults', '#portionRecommendedSize');
   await runSmoke('GelatinCalc', 'gelatincalc.html', page => page.getByRole('button', { name: 'Пересчитать желатин' }).click(), '#gelatinResults', '#gelatinConverted');
