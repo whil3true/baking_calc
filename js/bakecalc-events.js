@@ -14,9 +14,9 @@ const BakeCalcEvents = (() => {
     return Number.isFinite(id) ? id : null;
   }
 
-  function numericValue(node) {
+  function numericValue(node, fallback = 0) {
     const value = Number.parseFloat(node.value);
-    return Number.isFinite(value) ? value : 0;
+    return Number.isFinite(value) ? value : fallback;
   }
 
   function bind(actions, root = document) {
@@ -64,7 +64,7 @@ const BakeCalcEvents = (() => {
         return;
       }
       if (action === 'form-field') {
-        actions.updateForm(node.dataset.formKey, node.dataset.field, numericValue(node));
+        actions.updateForm(node.dataset.formKey, node.dataset.field, Number.parseFloat(node.value));
         return;
       }
       if (action === 'ingredient-input' && node.tagName !== 'SELECT') {
