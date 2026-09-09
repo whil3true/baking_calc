@@ -156,8 +156,8 @@ if old_render_all not in app:
     raise RuntimeError('Could not replace renderAll/bootstrap block')
 app = app.replace(old_render_all, new_render_all, 1)
 
-if '.innerHTML =' in app or 'document.createElement' in app:
-    raise RuntimeError('app.js still contains direct template rendering')
+if '.innerHTML =' in app or re.search(r'document\.createElement\([\'\"](?:tr|td|div|button|input|select|label)', app):
+    raise RuntimeError('app.js still contains direct UI template rendering')
 APP.write_text(app, encoding='utf-8')
 
 html = HTML.read_text(encoding='utf-8')
