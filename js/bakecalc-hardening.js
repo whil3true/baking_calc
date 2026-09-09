@@ -111,7 +111,8 @@
     if (costBox && !document.getElementById('resultCostWarning')) {
       const warning = document.createElement('p');
       warning.id = 'resultCostWarning';
-      warning.className = 'cost-warning';
+      warning.className = 'mt-3 text-xs leading-relaxed';
+      warning.style.color = '#912018';
       warning.hidden = true;
       costBox.appendChild(warning);
     }
