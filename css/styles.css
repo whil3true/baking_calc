@@ -37,3 +37,33 @@ input[type="number"] { -moz-appearance: textfield; }
 .tool-tile-soon .tool-status { color: rgba(46, 40, 42, 0.4); }
 @media (max-width: 767px) { body { padding-bottom: 20px; } .tool-tile { min-height: 200px; padding: 1rem; } }
 @media (max-width: 420px) { .tool-tile { min-height: 190px; } .tool-description { font-size: 0.75rem; } }
+
+/* Shared navigation: a real relative link also works on GitHub project Pages. */
+.home-link { display: inline-flex; align-items: center; gap: 0.5rem; min-height: 44px; padding: 0.5rem 0.75rem; border: 1px solid #E8E2D5; border-radius: 0.75rem; color: #6B4B36; font-size: 0.875rem; font-weight: 600; text-decoration: none; }
+.home-link:hover { background: #F5EFE6; border-color: #D97736; }
+.home-link:focus-visible, .tool-tile:focus-visible, button:focus-visible, summary:focus-visible { outline: 3px solid #9D4E23; outline-offset: 3px; }
+
+/* CreamCalc's form and result components. */
+[hidden] { display: none !important; }
+.cream-label { display: block; font-size: 0.875rem; font-weight: 500; margin-bottom: 0.5rem; }
+.cream-shapes { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.5rem; }
+.cream-shapes label { position: relative; cursor: pointer; }
+.cream-shapes input { position: absolute; opacity: 0; width: 1px; height: 1px; }
+.cream-shapes span { display: flex; align-items: center; justify-content: center; min-height: 48px; padding: 0.6rem 0.4rem; background: #F5EFE6; border-radius: 0.75rem; color: #6B5E5A; font-size: 0.875rem; font-weight: 600; }
+.cream-shapes input:checked + span { background: #D97736; color: white; }
+.cream-shapes input:focus-visible + span { outline: 3px solid #9D4E23; outline-offset: 3px; }
+.cream-check { display: flex; align-items: center; gap: 0.6rem; min-height: 44px; cursor: pointer; font-size: 0.875rem; font-weight: 600; }
+.cream-check input { width: 20px; height: 20px; }
+#creamForm fieldset:disabled { opacity: 0.5; }
+#creamForm input:disabled { cursor: not-allowed; background: #F5EFE6; }
+.input-field[aria-invalid="true"] { border-color: #B42318; }
+.cream-errors { border: 1px solid #D92D20; color: #912018; background: #FFF4F2; border-radius: 0.75rem; padding: 1rem; font-size: 0.875rem; scroll-margin-top: 170px; }
+.cream-errors p { font-weight: 600; }
+.cream-errors ul { list-style: disc; padding-left: 1.25rem; margin-top: 0.5rem; }
+.cream-errors li + li { margin-top: 0.25rem; }
+.cream-results, #resultsSection { scroll-margin-top: 170px; }
+.cream-breakdown > div { display: flex; align-items: baseline; justify-content: space-between; gap: 1rem; padding: 0.75rem 0; border-bottom: 1px solid #F5EFE6; font-size: 0.875rem; }
+.cream-breakdown dd { text-align: right; white-space: nowrap; font-weight: 600; }
+.cream-copy-text { height: auto; padding: 0.75rem; resize: vertical; }
+@media (max-width: 360px) { .cream-shapes span { font-size: 0.75rem; } }
+@media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation: none !important; transition: none !important; scroll-behavior: auto !important; } }
