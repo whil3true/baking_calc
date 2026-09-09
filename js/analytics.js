@@ -21,3 +21,10 @@ ym(112356971, 'init', {
   accurateTrackBounce: true,
   trackLinks: true
 });
+
+/* BakeCalc legacy page still initializes from app.js on DOMContentLoaded.
+   Load its reliability layer synchronously while the document is parsing so
+   the hardened handlers replace the legacy ones before that event fires. */
+if (document.getElementById('recipeNameInput')) {
+  document.write('<script src="js/bakecalc-math.js"><\\/script><script src="js/bakecalc-hardening.js"><\\/script>');
+}
