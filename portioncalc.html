@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Калькулятор порций BakeCalc — расчёт рекомендуемого размера круглого или прямоугольного торта по количеству гостей и размеру порции.">
+<title>Порции — размер торта по количеству гостей | BakeCalc</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/inter@5.0.8/index.css">
+<link rel="stylesheet" href="css/styles.css">
+<script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+<script>
+  if (window.tailwind) tailwind.config = { theme: { extend: { colors: { cream: '#FBF9F5', caramel: '#D97736', terracotta: '#C86D51', dark: '#2E282A', soft: '#F5EFE6' }, fontFamily: { sans: ['Inter', 'system-ui', 'sans-serif'] } } } };
+</script>
+<script src="js/portioncalc-math.js" defer></script>
+<script src="js/portioncalc.js" defer></script>
+</head>
+<body class="min-h-screen bg-cream text-dark font-sans">
+<header class="sticky top-0 z-30 bg-cream/90 backdrop-blur-md border-b border-soft">
+  <div class="max-w-3xl mx-auto px-4 py-3">
+    <nav aria-label="Навигация инструмента" class="mb-3"><a href="index.html" class="home-link"><span aria-hidden="true">←</span> На главную</a></nav>
+    <div class="flex items-center justify-between gap-3">
+      <div class="flex items-center gap-3 min-w-0">
+        <div class="w-11 h-11 rounded-2xl bg-gradient-to-br from-caramel to-terracotta flex items-center justify-center shrink-0 shadow-sm" aria-hidden="true"><i data-lucide="users" class="w-6 h-6 text-white"></i></div>
+        <div class="min-w-0"><h1 class="text-xl md:text-2xl font-bold tracking-tight">Порции</h1><p class="text-xs md:text-sm text-dark/60">Размер торта по количеству гостей</p></div>
+      </div>
+      <button type="reset" form="portionForm" class="btn-ghost px-3 py-2 rounded-xl text-sm font-medium shrink-0">Сбросить</button>
+    </div>
+  </div>
+</header>
+<main class="max-w-3xl mx-auto px-4 py-5 md:py-8 space-y-5">
+  <p class="text-sm text-dark/60">Введите количество гостей и выберите размер порции. Калькулятор оценит минимальную площадь торта и округлит размер вверх.</p>
+  <noscript><p class="card p-5">Для расчёта включите JavaScript. Ссылка «На главную» работает и без него.</p></noscript>
+
+  <form id="portionForm" class="space-y-5" novalidate>
+    <section class="card p-5 md:p-6" aria-labelledby="portion-people-title">
+      <div class="flex items-start gap-3 mb-5"><span class="step-number" aria-hidden="true">1</span><div><h2 id="portion-people-title" class="text-lg font-semibold">Гости и запас</h2><p class="text-sm text-dark/60 mt-1">Запас нужен на непредвиденные порции и более щедрую нарезку.</p></div></div>
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+        <label class="block"><span class="cream-label">Количество гостей</span><input id="guests" name="guests" type="text" inputmode="numeric" maxlength="4" value="20" class="input-field w-full" required></label>
+        <label class="block"><span class="cream-label">Запас, %</span><input id="reserve" name="reserve" type="text" inputmode="decimal" maxlength="5" value="10" class="input-field w-full" required></label>
+      </div>
+    </section>
+
+    <section class="card p-5 md:p-6" aria-labelledby="portion-size-title">
+      <div class="flex items-start gap-3 mb-5"><span class="step-number" aria-hidden="true">2</span><div><h2 id="portion-size-title" class="text-lg font-semibold">Размер одной порции</h2><p class="text-sm text-dark/60 mt-1">Размер указан по площади среза. Высота торта в этот расчёт не входит.</p></div></div>
+      <label class="block mb-4"><span class="cream-label">Тип порции</span><select id="portionPreset" name="portionPreset" class="input-field w-full"><option value="small">Небольшая — 4 × 8 см</option><option value="standard" selected>Стандартная — 5 × 10 см</option><option value="large">Большая — 6 × 10 см</option><option value="custom">Своя</option></select></label>
+      <fieldset id="customPortionFields" hidden disabled><legend class="sr-only">Свой размер порции</legend><div class="grid grid-cols-2 gap-3"><label class="block"><span class="cream-label">Ширина, см</span><input id="portionWidth" name="portionWidth" type="text" inputmode="decimal" maxlength="32" value="5" class="input-field w-full"></label><label class="block"><span class="cream-label">Длина, см</span><input id="portionLength" name="portionLength" type="text" inputmode="decimal" maxlength="32" value="10" class="input-field w-full"></label></div></fieldset>
+    </section>
+
+    <section class="card p-5 md:p-6" aria-labelledby="portion-form-title">
+      <div class="flex items-start gap-3 mb-5"><span class="step-number" aria-hidden="true">3</span><div><h2 id="portion-form-title" class="text-lg font-semibold">Форма торта</h2><p class="text-sm text-dark/60 mt-1">Для прямоугольника можно задать желаемое соотношение длины к ширине.</p></div></div>
+      <label class="block mb-4"><span class="cream-label">Форма</span><select id="shape" name="shape" class="input-field w-full"><option value="circle" selected>Круглая</option><option value="rect">Прямоугольная</option></select></label>
+      <fieldset id="rectRatioField" hidden disabled><legend class="sr-only">Соотношение сторон прямоугольника</legend><label class="block mb-4"><span class="cream-label">Длина / ширина</span><input id="rectRatio" name="rectRatio" type="text" inputmode="decimal" maxlength="32" value="1.5" class="input-field w-full" aria-describedby="ratioHint"></label><p id="ratioHint" class="text-xs text-dark/60 -mt-2 mb-4">1 = квадрат, 1,5 = длина примерно в полтора раза больше ширины.</p></fieldset>
+      <label class="block"><span class="cream-label">Шаг округления размера, см</span><input id="roundStep" name="roundStep" type="text" inputmode="decimal" maxlength="32" value="1" class="input-field w-full" aria-describedby="roundHint"></label>
+      <p id="roundHint" class="text-xs text-dark/60 mt-2">Например, шаг 1 см даст Ø 27 см, а шаг 2 см — Ø 28 см.</p>
+    </section>
+
+    <div id="portionErrors" class="cream-errors" role="alert" tabindex="-1" hidden></div>
+    <button type="submit" class="w-full btn-primary py-4 rounded-2xl font-bold text-lg flex items-center justify-center gap-2"><i data-lucide="calculator" class="w-5 h-5" aria-hidden="true"></i>Рассчитать размер торта</button>
+  </form>
+
+  <p id="portionStatus" role="status" class="text-sm text-dark/60"></p>
+  <section id="portionResults" class="card p-5 md:p-6 cream-results" aria-labelledby="portion-result-title" tabindex="-1" hidden>
+    <p class="text-sm text-dark/60 mb-1">Рекомендуемый размер</p>
+    <h2 id="portion-result-title" class="text-lg font-semibold">Торт для заданного количества гостей</h2>
+    <p id="portionRecommendedSize" class="text-4xl md:text-5xl font-bold text-caramel mt-2 mb-3"></p>
+    <p id="portionSummary" class="text-sm text-dark/60 mb-5"></p>
+    <dl class="cream-breakdown">
+      <div><dt>Заложено порций</dt><dd id="portionTarget"></dd></div>
+      <div><dt>Расчётная вместимость</dt><dd id="portionCapacity"></dd></div>
+      <div><dt>Запас сверх гостей</dt><dd id="portionExtra"></dd></div>
+      <div><dt>Размер порции</dt><dd id="portionSlice"></dd></div>
+      <div><dt>Минимальная площадь торта</dt><dd id="portionArea"></dd></div>
+    </dl>
+    <p class="text-xs text-dark/60 mt-4 leading-relaxed">Это геометрическая оценка по площади среза. Реальное количество зависит от схемы нарезки, формы кусочков, высоты торта и того, насколько одинаково режут гости, официанты и родственники с очень уверенной рукой.</p>
+    <button id="copyPortion" type="button" class="btn-primary w-full rounded-xl py-3 font-semibold mt-5">Скопировать расчёт</button>
+  </section>
+
+  <details class="card p-5 md:p-6 text-sm">
+    <summary class="font-semibold cursor-pointer">Как считается размер?</summary>
+    <div class="mt-3 space-y-3 text-dark/70 leading-relaxed">
+      <p>Площадь одной порции = ширина × длина. Количество порций увеличивается на выбранный запас и округляется вверх до целого.</p>
+      <p>Для круглого торта диаметр вычисляется из площади круга. Для прямоугольного размеры подбираются по заданному соотношению сторон. Итоговые размеры всегда округляются вверх выбранным шагом.</p>
+      <p>Высота торта специально не используется: этот инструмент отвечает только на вопрос о площади нарезки. Для расчёта массы и крема используются отдельные инструменты.</p>
+    </div>
+  </details>
+  <footer class="text-center py-3"><a href="index.html" class="home-link"><span aria-hidden="true">←</span> На главную</a></footer>
+</main>
+<script src="js/analytics.js"></script>
+<noscript><div><img src="https://mc.yandex.ru/watch/112356971" style="position:absolute; left:-9999px;" alt="" /></div></noscript>
+</body>
+</html>
