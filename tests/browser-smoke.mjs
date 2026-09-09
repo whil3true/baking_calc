@@ -2,7 +2,7 @@ import assert from 'node:assert/strict';
 import { chromium } from 'playwright';
 
 const baseURL = process.env.BASE_URL || 'http://127.0.0.1:8000';
-const browser = await chromium.launch({ headless: true });
+const browser = await chromium.launch({ headless: true, channel: 'chrome' });
 
 async function runSmoke(name, path, action, resultSelector, valueSelector) {
   const page = await browser.newPage();
@@ -55,6 +55,17 @@ try {
     page => page.getByRole('button', { name: 'Пересчитать желатин' }).click(),
     '#gelatinResults',
     '#gelatinConverted'
+  );
+
+  await runSmoke(
+    'ConverterCalc',
+    'convertercalc.html',
+    async page => {
+      await page.locator('#density').fill('0.8');
+      await page.getByRole('button', { name: 'Конвертировать' }).click();
+    },
+    '#converterResults',
+    '#converterResultValue'
   );
 } finally {
   await browser.close();
