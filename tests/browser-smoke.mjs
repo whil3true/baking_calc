@@ -48,6 +48,7 @@ async function runBakeCalcPriceCalcIntegration() {
     assert.match(href || '', /^pricecalc\.html\?/);
     assert.match(href || '', /source=bakecalc/);
     assert.match(href || '', /ingredientsCost=/);
+    assert.match(href || '', /packagingCost=/);
     assert.match(href || '', /extraCost=/);
 
     await transferLink.click();
@@ -59,71 +60,30 @@ async function runBakeCalcPriceCalcIntegration() {
     const packagingCost = Number(await page.locator('#packagingCost').inputValue());
     assert.ok(ingredientsCost > 0, 'BakeCalc → PriceCalc: ingredient cost was not transferred');
     assert.ok(extraCost > 0, 'BakeCalc → PriceCalc: extra cost was not transferred');
-    assert.equal(packagingCost, 0, 'BakeCalc → PriceCalc: packaging must stay editable and start at zero');
+    assert.ok(packagingCost > 0, 'BakeCalc → PriceCalc: packaging cost was not transferred');
     assert.match(await page.locator('#priceStatus').textContent() || '', /перенесена из BakeCalc/i);
     assert.equal(new URL(page.url()).search, '', 'BakeCalc → PriceCalc: transfer query should be cleaned after import');
     assert.deepEqual(pageErrors, [], `BakeCalc → PriceCalc: browser JavaScript errors: ${pageErrors.join(' | ')}`);
-    console.log(`✓ BakeCalc → PriceCalc: ${ingredientsCost} ₽ + ${extraCost} ₽`);
+    console.log(`✓ BakeCalc → PriceCalc: ingredients ${ingredientsCost} ₽, packaging ${packagingCost} ₽, extras ${extraCost} ₽`);
   } finally {
     await page.close();
   }
 }
 
 try {
-  await runSmoke(
-    'BakeCalc',
-    'bakecalc.html',
-    async page => {
-      await page.getByRole('button', { name: 'Загрузить тестовый рецепт' }).click();
-      await page.getByRole('button', { name: 'Рассчитать новый рецепт' }).click();
-    },
-    '#resultsSection',
-    '#resultCoefficientBadge'
-  );
+  await runSmoke('BakeCalc', 'bakecalc.html', async page => {
+    await page.getByRole('button', { name: 'Загрузить тестовый рецепт' }).click();
+    await page.getByRole('button', { name: 'Рассчитать новый рецепт' }).click();
+  }, '#resultsSection', '#resultCoefficientBadge');
 
-  await runSmoke(
-    'CreamCalc',
-    'creamcalc.html',
-    page => page.getByRole('button', { name: 'Рассчитать крем' }).click(),
-    '#creamResults',
-    '#creamPrepare'
-  );
-
-  await runSmoke(
-    'PortionCalc',
-    'portioncalc.html',
-    page => page.getByRole('button', { name: 'Рассчитать размер торта' }).click(),
-    '#portionResults',
-    '#portionRecommendedSize'
-  );
-
-  await runSmoke(
-    'GelatinCalc',
-    'gelatincalc.html',
-    page => page.getByRole('button', { name: 'Пересчитать желатин' }).click(),
-    '#gelatinResults',
-    '#gelatinConverted'
-  );
-
-  await runSmoke(
-    'ConverterCalc',
-    'convertercalc.html',
-    async page => {
-      await page.locator('#density').fill('0.8');
-      await page.getByRole('button', { name: 'Конвертировать' }).click();
-    },
-    '#converterResults',
-    '#converterResultValue'
-  );
-
-  await runSmoke(
-    'PriceCalc',
-    'pricecalc.html',
-    page => page.getByRole('button', { name: 'Рассчитать цену' }).click(),
-    '#priceResults',
-    '#priceSalePrice'
-  );
-
+  await runSmoke('CreamCalc', 'creamcalc.html', page => page.getByRole('button', { name: 'Рассчитать крем' }).click(), '#creamResults', '#creamPrepare');
+  await runSmoke('PortionCalc', 'portioncalc.html', page => page.getByRole('button', { name: 'Рассчитать размер торта' }).click(), '#portionResults', '#portionRecommendedSize');
+  await runSmoke('GelatinCalc', 'gelatincalc.html', page => page.getByRole('button', { name: 'Пересчитать желатин' }).click(), '#gelatinResults', '#gelatinConverted');
+  await runSmoke('ConverterCalc', 'convertercalc.html', async page => {
+    await page.locator('#density').fill('0.8');
+    await page.getByRole('button', { name: 'Конвертировать' }).click();
+  }, '#converterResults', '#converterResultValue');
+  await runSmoke('PriceCalc', 'pricecalc.html', page => page.getByRole('button', { name: 'Рассчитать цену' }).click(), '#priceResults', '#priceSalePrice');
   await runBakeCalcPriceCalcIntegration();
 } finally {
   await browser.close();
