@@ -4,13 +4,10 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>BakeCalc — Кондитерский калькулятор</title>
-<script src="https://cdn.tailwindcss.com"></script>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/inter@5.0.8/index.css">
 <link rel="stylesheet" href="css/styles.css">
+<link rel="stylesheet" href="css/utilities.css">
 <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
-<script>
-  tailwind.config = { theme: { extend: { colors: { cream: '#FBF9F5', caramel: '#D97736', terracotta: '#C86D51', dark: '#2E282A', soft: '#F5EFE6' }, fontFamily: { sans: ['Inter', 'system-ui', 'sans-serif'] } } } };
-</script>
 </head>
 <body class="min-h-screen w-full max-w-full overflow-x-hidden box-border">
 <div id="toast" class="fixed top-4 left-1/2 -translate-x-1/2 z-50 bg-dark text-cream px-5 py-3 rounded-2xl shadow-lg flex items-center gap-2 transition-all duration-300 translate-y-[-200%] opacity-0 pointer-events-none"><i data-lucide="check-circle-2" class="w-5 h-5 text-caramel"></i><span id="toastText" class="font-medium">Скопировано в буфер!</span></div>
