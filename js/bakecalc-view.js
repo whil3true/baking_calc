@@ -118,11 +118,15 @@ const BakeCalcView = (() => {
     icon.style.transform = content.classList.contains('hidden') ? 'rotate(0deg)' : 'rotate(180deg)';
   }
 
-  function renderResults({ state, totalWeight, ingredientsCost, extraCostsTotal }) {
+  function renderResults({ state, totalWeight, ingredientsCost, extraCostsTotal, costDetails, priceCalcHref }) {
     const section = byId('resultsSection');
+    const priceLink = byId('openPriceCalc');
+    const warning = byId('resultCostWarning');
     if (!section) return;
     if (!state.result) {
       section.classList.add('hidden');
+      if (priceLink) { priceLink.hidden = true; priceLink.removeAttribute('href'); }
+      if (warning) { warning.hidden = true; warning.textContent = ''; }
       return;
     }
     section.classList.remove('hidden');
@@ -140,7 +144,9 @@ const BakeCalcView = (() => {
     }).join('');
     byId('resultItemsCount').textContent = state.ingredients.length;
     byId('resultTotalWeight').textContent = `${totalWeight} г`;
-    const hasCosts = ingredientsCost > 0 || extraCostsTotal > 0 || state.ingredients.some(item => Number(item.price) > 0);
+
+    const anyPricing = state.ingredients.some(item => Number(item.price) > 0) || extraCostsTotal > 0;
+    const hasCosts = ingredientsCost > 0 || extraCostsTotal > 0 || anyPricing;
     const costSection = byId('resultCostSection');
     if (hasCosts) {
       costSection.classList.remove('hidden');
@@ -149,6 +155,16 @@ const BakeCalcView = (() => {
       byId('resultTotalCost').textContent = `${(ingredientsCost + extraCostsTotal).toFixed(2)} ₽`;
     } else {
       costSection.classList.add('hidden');
+    }
+
+    if (warning) {
+      warning.hidden = !anyPricing || costDetails.complete;
+      warning.textContent = warning.hidden ? '' : `Себестоимость неполная: ${costDetails.issues.join('; ')}.`;
+    }
+    if (priceLink) {
+      priceLink.hidden = !priceCalcHref;
+      if (priceCalcHref) priceLink.href = priceCalcHref;
+      else priceLink.removeAttribute('href');
     }
     icons();
   }
