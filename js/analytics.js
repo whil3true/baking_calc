@@ -22,9 +22,16 @@ ym(112356971, 'init', {
   trackLinks: true
 });
 
-/* BakeCalc legacy page still initializes from app.js on DOMContentLoaded.
-   Load its reliability layer synchronously while the document is parsing so
-   the hardened handlers replace the legacy ones before that event fires. */
+/* The legacy BakeCalc page keeps its UI in app.js. Load its pure math and
+   reliability layer only on that page. The hardening layer is safe whether
+   DOMContentLoaded has already fired or not. */
 if (document.getElementById('recipeNameInput')) {
-  document.write('<script src="js/bakecalc-math.js"><\\/script><script src="js/bakecalc-hardening.js"><\\/script>');
+  const mathScript = document.createElement('script');
+  mathScript.src = 'js/bakecalc-math.js';
+  mathScript.onload = () => {
+    const hardeningScript = document.createElement('script');
+    hardeningScript.src = 'js/bakecalc-hardening.js';
+    document.head.appendChild(hardeningScript);
+  };
+  document.head.appendChild(mathScript);
 }
