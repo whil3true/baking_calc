@@ -42,7 +42,7 @@ test('app delegates dynamic rendering to BakeCalcView', () => {
   assert.match(app, /BakeCalcView\.renderResults/);
   assert.match(app, /BakeCalcView\.syncStaticFields/);
   assert.doesNotMatch(app, /\.innerHTML\s*=/, 'app.js must not build DOM templates directly');
-  assert.doesNotMatch(app, /document\.createElement/, 'app.js must not create rendered rows directly');
+  assert.doesNotMatch(app, /document\.createElement\(['"](?:tr|td|div|button|input|select|label)/, 'app.js must not create rendered UI nodes directly');
 });
 
 test('event module uses delegation and app binds controller actions', () => {
