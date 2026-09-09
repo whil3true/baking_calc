@@ -21,3 +21,26 @@ ym(112356971, 'init', {
   accurateTrackBounce: true,
   trackLinks: true
 });
+
+/* Icons are decoration, not a prerequisite for calculations or navigation. */
+window.lucide = window.lucide || { createIcons() {} };
+
+/* Planned tools are status cards, not links to the top of the page. */
+document.querySelectorAll('a.tool-tile-soon').forEach(card => {
+  card.removeAttribute('href');
+  card.setAttribute('aria-disabled', 'true');
+});
+
+/* The legacy BakeCalc page keeps its UI in app.js. Load its pure math and
+   reliability layer only on that page. The hardening layer is safe whether
+   DOMContentLoaded has already fired or not. */
+if (document.getElementById('recipeNameInput')) {
+  const mathScript = document.createElement('script');
+  mathScript.src = 'js/bakecalc-math.js';
+  mathScript.onload = () => {
+    const hardeningScript = document.createElement('script');
+    hardeningScript.src = 'js/bakecalc-hardening.js';
+    document.head.appendChild(hardeningScript);
+  };
+  document.head.appendChild(mathScript);
+}
