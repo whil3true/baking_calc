@@ -1,4 +1,4 @@
-/* BakeCalc reliability layer. Loaded after app.js and before DOMContentLoaded. */
+/* BakeCalc reliability layer. Safe to load before or after DOMContentLoaded. */
 (() => {
   'use strict';
 
@@ -81,7 +81,6 @@
     }
   };
 
-  const originalCopyRecipe = copyRecipe;
   copyRecipe = async function () {
     const text = generateRecipeText();
     if (!text) return showToast('Сначала выполните расчёт');
@@ -105,7 +104,7 @@
     }
   };
 
-  window.addEventListener('DOMContentLoaded', () => {
+  function finishSetup() {
     const weightLabel = document.querySelector('#resultTotalWeight')?.previousElementSibling;
     if (weightLabel) weightLabel.textContent = 'Вес ингредиентов, указанных в граммах';
     const costBox = document.querySelector('#resultCostSection .bg-soft\/40');
@@ -116,5 +115,11 @@
       warning.hidden = true;
       costBox.appendChild(warning);
     }
-  });
+    loadState();
+    renderAll();
+    window.lucide?.createIcons();
+  }
+
+  if (document.readyState === 'loading') window.addEventListener('DOMContentLoaded', finishSetup, { once: true });
+  else finishSetup();
 })();
