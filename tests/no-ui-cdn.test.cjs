@@ -32,6 +32,13 @@ test('every used icon has a local definition', () => {
   assert.deepEqual(missing, [], `Missing local icon definitions: ${missing.join(', ')}`);
 });
 
+test('local icon runtime keeps the existing compatibility contract', () => {
+  const icons = read('js/icons.js');
+  assert.match(icons, /window\.lucide\s*=\s*\{\s*createIcons\s*\}/, 'icons.js must expose window.lucide.createIcons');
+  assert.match(icons, /const fallback\s*=/, 'icons.js must keep a safe fallback for unknown icons');
+  assert.match(icons, /querySelectorAll\?\.\('\[data-lucide\]'\)/, 'icons.js must render dynamic data-lucide nodes');
+});
+
 test('font utility uses only local system fonts', () => {
   const css = read('css/utilities.css');
   assert.doesNotMatch(css, /font-family:\s*['"]Inter['"]/i);
