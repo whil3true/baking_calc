@@ -21,7 +21,6 @@ test('BakeCalc loads view and event modules before app controller', () => {
     'js/bakecalc-view.js',
     'js/bakecalc-events.js',
     'js/app.js',
-    'js/bakecalc-hardening.js',
     'js/analytics.js'
   ];
   let previous = -1;
@@ -31,6 +30,7 @@ test('BakeCalc loads view and event modules before app controller', () => {
     assert.ok(index > previous, `${script} must load after previous BakeCalc runtime module`);
     previous = index;
   }
+  assert.doesNotMatch(html, /bakecalc-hardening\.js/);
 });
 
 test('app delegates dynamic rendering to BakeCalcView', () => {
@@ -43,6 +43,14 @@ test('app delegates dynamic rendering to BakeCalcView', () => {
   assert.match(app, /BakeCalcView\.syncStaticFields/);
   assert.doesNotMatch(app, /\.innerHTML\s*=/, 'app.js must not build DOM templates directly');
   assert.doesNotMatch(app, /document\.createElement\(['"](?:tr|td|div|button|input|select|label)/, 'app.js must not create rendered UI nodes directly');
+});
+
+test('view owns warning and PriceCalc link DOM', () => {
+  const view = read('js/bakecalc-view.js');
+  const app = read('js/app.js');
+  assert.match(view, /resultCostWarning/);
+  assert.match(view, /openPriceCalc/);
+  assert.doesNotMatch(app, /createElement\(['"](?:a|p)['"]\)/);
 });
 
 test('event module uses delegation and app binds controller actions', () => {

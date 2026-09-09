@@ -11,8 +11,9 @@ test('BakeCalc runtime dependencies are explicit and ordered in HTML', () => {
   const scripts = [
     'js/bakecalc-math.js',
     'js/bakecalc-state.js',
+    'js/bakecalc-view.js',
+    'js/bakecalc-events.js',
     'js/app.js',
-    'js/bakecalc-hardening.js',
     'js/analytics.js'
   ];
   let previous = -1;
@@ -22,12 +23,16 @@ test('BakeCalc runtime dependencies are explicit and ordered in HTML', () => {
     assert.ok(index > previous, `${script} must load after the previous BakeCalc runtime dependency`);
     previous = index;
   }
+  assert.doesNotMatch(html, /bakecalc-hardening\.js/);
 });
 
-test('shared analytics no longer bootstraps BakeCalc business logic', () => {
+test('obsolete BakeCalc hardening layer is removed', () => {
+  assert.equal(fs.existsSync(path.join(root, 'js', 'bakecalc-hardening.js')), false);
+});
+
+test('shared analytics does not bootstrap BakeCalc business logic', () => {
   const analytics = read('js/analytics.js');
-  assert.doesNotMatch(analytics, /bakecalc-math\.js/);
-  assert.doesNotMatch(analytics, /bakecalc-hardening\.js/);
+  assert.doesNotMatch(analytics, /bakecalc-(?:math|state|view|events|hardening)\.js/);
   assert.doesNotMatch(analytics, /recipeNameInput/);
 });
 
@@ -49,8 +54,11 @@ test('state module stays independent from DOM and browser globals', () => {
   assert.match(stateModule, /storage\.setItem/);
 });
 
-test('hardening layer does not replace persistence anymore', () => {
-  const hardening = read('js/bakecalc-hardening.js');
-  assert.doesNotMatch(hardening, /loadState\s*=\s*function/);
-  assert.doesNotMatch(hardening, /BakeCalcMath\.restoreState/);
+test('controller uses BakeCalcMath directly instead of redefining calculation functions', () => {
+  const app = read('js/app.js');
+  assert.match(app, /BakeCalcMath\.coefficient\(state\)/);
+  assert.match(app, /BakeCalcMath\.ingredientCostDetails/);
+  assert.doesNotMatch(app, /function calculateArea\s*\(/);
+  assert.doesNotMatch(app, /function calculateCoefficient\s*\(/);
+  assert.doesNotMatch(app, /\b(?:setFormType|updateForm|toggleHeight|renderResults|calculateRecipe|copyRecipe)\s*=\s*function\b/);
 });
