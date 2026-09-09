@@ -7,30 +7,53 @@
   const results = document.getElementById('portionResults');
   const errors = document.getElementById('portionErrors');
   const status = document.getElementById('portionStatus');
+
+  if (!form || !results || !errors || !status || typeof PortionCalc === 'undefined') {
+    console.error('PortionCalc initialization failed: required page elements or math module are missing.');
+    return;
+  }
+
   const formatter = new Intl.NumberFormat('ru-RU', { maximumFractionDigits: 1 });
   const number = value => formatter.format(value);
   const field = key => form.elements.namedItem(key);
   let lastCalculation = null;
 
   function readSettings() {
-    return Object.fromEntries(Object.keys(PortionCalc.defaults).map(key => [key, field(key).value]));
+    const settings = {};
+    for (const key of Object.keys(PortionCalc.defaults)) {
+      const input = field(key);
+      // Be tolerant of a briefly mismatched cached HTML/JS pair after deploy.
+      if (input && 'value' in input) settings[key] = input.value;
+      else settings[key] = PortionCalc.defaults[key];
+    }
+    return settings;
   }
 
   function applySettings(settings) {
-    for (const [key, value] of Object.entries(settings)) field(key).value = value;
+    for (const [key, value] of Object.entries(settings)) {
+      const input = field(key);
+      if (input && 'value' in input) input.value = value;
+    }
     syncFields();
+  }
+
+  function setHiddenDisabled(id, disabled) {
+    const element = document.getElementById(id);
+    if (!element) return;
+    element.disabled = disabled;
+    element.hidden = disabled;
   }
 
   function syncFields() {
     const settings = readSettings();
     const custom = settings.portionPreset === 'custom';
     const rectangular = settings.shape === 'rect';
-    document.getElementById('customPortionFields').disabled = !custom;
-    document.getElementById('customPortionFields').hidden = !custom;
-    document.getElementById('rectRatioField').disabled = !rectangular;
-    document.getElementById('rectRatioField').hidden = !rectangular;
-    document.getElementById('roundCutPreview').hidden = rectangular;
-    document.getElementById('rectCutPreview').hidden = !rectangular;
+    setHiddenDisabled('customPortionFields', !custom);
+    setHiddenDisabled('rectRatioField', !rectangular);
+    const roundPreview = document.getElementById('roundCutPreview');
+    const rectPreview = document.getElementById('rectCutPreview');
+    if (roundPreview) roundPreview.hidden = rectangular;
+    if (rectPreview) rectPreview.hidden = !rectangular;
   }
 
   function saveSettings() {
@@ -90,17 +113,22 @@
     return result.cutType === 'wedge' ? 'Клиновидная' : 'Сеткой';
   }
 
+  function setText(id, text) {
+    const element = document.getElementById(id);
+    if (element) element.textContent = text;
+  }
+
   function renderResult(calculation, settings) {
     const r = calculation.result;
     lastCalculation = { result: r, settings };
-    document.getElementById('portionRecommendedSize').textContent = sizeText(r);
-    document.getElementById('portionTarget').textContent = `${r.targetPortions} порц.`;
-    document.getElementById('portionCapacity').textContent = `${r.capacity} порц.`;
-    document.getElementById('portionExtra').textContent = `${r.extraPortions} порц.`;
-    document.getElementById('portionSlice').textContent = `${number(r.portionWidth)} × ${number(r.portionLength)} см ≈ ${number(r.portionArea)} см²`;
-    document.getElementById('portionCut').textContent = cutText(r);
-    document.getElementById('portionArea').textContent = `${number(r.requiredArea)} см²`;
-    document.getElementById('portionSummary').textContent = `Гостей: ${r.guests} · запас: ${number(r.reserve)}% · порция: ${r.portionLabel.toLowerCase()} · нарезка: ${cutText(r).toLowerCase()}`;
+    setText('portionRecommendedSize', sizeText(r));
+    setText('portionTarget', `${r.targetPortions} порц.`);
+    setText('portionCapacity', `${r.capacity} порц.`);
+    setText('portionExtra', `${r.extraPortions} порц.`);
+    setText('portionSlice', `${number(r.portionWidth)} × ${number(r.portionLength)} см ≈ ${number(r.portionArea)} см²`);
+    setText('portionCut', cutText(r));
+    setText('portionArea', `${number(r.requiredArea)} см²`);
+    setText('portionSummary', `Гостей: ${r.guests} · запас: ${number(r.reserve)}% · порция: ${r.portionLabel.toLowerCase()} · нарезка: ${cutText(r).toLowerCase()}`);
     results.hidden = false;
     status.textContent = 'Расчёт готов. Размер автоматически округлён вверх до целого сантиметра.';
     results.focus({ preventScroll: true });
@@ -130,7 +158,8 @@
     saveSettings();
   });
 
-  document.getElementById('copyPortion').addEventListener('click', async () => {
+  const copyButton = document.getElementById('copyPortion');
+  copyButton?.addEventListener('click', async () => {
     if (!lastCalculation) return;
     const r = lastCalculation.result;
     const text = [
