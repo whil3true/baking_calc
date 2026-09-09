@@ -30,8 +30,7 @@ const PortionCalc = (() => {
 
   function roundUp(value, step) {
     if (!Number.isFinite(value) || !Number.isFinite(step) || step <= 0) return NaN;
-    const units = value / step;
-    return Math.ceil(units - Number.EPSILON * units) * step;
+    return Math.ceil(value / step) * step;
   }
 
   function restoreSettings(saved) {
