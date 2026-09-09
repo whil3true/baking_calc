@@ -160,7 +160,7 @@ GitHub Actions запускает unit/DOM тесты и browser smoke как о
 
 Чистая математика вынесена в `js/bakecalc-math.js`, `js/creamcalc-math.js`, `js/portioncalc-math.js`, `js/gelatincalc-math.js`, `js/convertercalc-math.js` и `js/pricecalc-math.js`. Контроллеры страниц отвечают за DOM, сохранение состояния, ошибки и копирование.
 
-Tailwind полностью удалён из runtime и зависимостей. Используемые utility-классы обслуживаются локальным `css/utilities.css`; основной компонентный CSS остаётся в `css/styles.css`. Inter и Lucide пока подключаются с CDN. История технического аудита и текущее состояние: [docs/repository-review.md](docs/repository-review.md).
+Tailwind полностью удалён из runtime и зависимостей. Используемые utility-классы обслуживаются локальным `css/utilities.css`; основной компонентный CSS остаётся в `css/styles.css`. Inter CDN и Lucide CDN удалены; интерфейс использует системный шрифт и локальный SVG-рендерер иконок.
 
 
 ## CSS без Tailwind
