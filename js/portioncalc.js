@@ -23,10 +23,14 @@
 
   function syncFields() {
     const settings = readSettings();
-    document.getElementById('customPortionFields').disabled = settings.portionPreset !== 'custom';
-    document.getElementById('customPortionFields').hidden = settings.portionPreset !== 'custom';
-    document.getElementById('rectRatioField').disabled = settings.shape !== 'rect';
-    document.getElementById('rectRatioField').hidden = settings.shape !== 'rect';
+    const custom = settings.portionPreset === 'custom';
+    const rectangular = settings.shape === 'rect';
+    document.getElementById('customPortionFields').disabled = !custom;
+    document.getElementById('customPortionFields').hidden = !custom;
+    document.getElementById('rectRatioField').disabled = !rectangular;
+    document.getElementById('rectRatioField').hidden = !rectangular;
+    document.getElementById('roundCutPreview').hidden = rectangular;
+    document.getElementById('rectCutPreview').hidden = !rectangular;
   }
 
   function saveSettings() {
@@ -82,6 +86,10 @@
       : `${number(result.length)} × ${number(result.width)} см`;
   }
 
+  function cutText(result) {
+    return result.cutType === 'wedge' ? 'Клиновидная' : 'Сеткой';
+  }
+
   function renderResult(calculation, settings) {
     const r = calculation.result;
     lastCalculation = { result: r, settings };
@@ -89,11 +97,12 @@
     document.getElementById('portionTarget').textContent = `${r.targetPortions} порц.`;
     document.getElementById('portionCapacity').textContent = `${r.capacity} порц.`;
     document.getElementById('portionExtra').textContent = `${r.extraPortions} порц.`;
-    document.getElementById('portionSlice').textContent = `${number(r.portionWidth)} × ${number(r.portionLength)} см`;
+    document.getElementById('portionSlice').textContent = `${number(r.portionWidth)} × ${number(r.portionLength)} см ≈ ${number(r.portionArea)} см²`;
+    document.getElementById('portionCut').textContent = cutText(r);
     document.getElementById('portionArea').textContent = `${number(r.requiredArea)} см²`;
-    document.getElementById('portionSummary').textContent = `Гостей: ${r.guests} · запас: ${number(r.reserve)}% · порция: ${r.portionLabel.toLowerCase()}`;
+    document.getElementById('portionSummary').textContent = `Гостей: ${r.guests} · запас: ${number(r.reserve)}% · порция: ${r.portionLabel.toLowerCase()} · нарезка: ${cutText(r).toLowerCase()}`;
     results.hidden = false;
-    status.textContent = 'Расчёт готов. Размер округлён вверх, чтобы площади хватило.';
+    status.textContent = 'Расчёт готов. Размер автоматически округлён вверх до целого сантиметра.';
     results.focus({ preventScroll: true });
     results.scrollIntoView({ behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block: 'start' });
   }
@@ -128,12 +137,13 @@
       'BakeCalc — расчёт размера торта по порциям',
       `Гостей: ${r.guests}`,
       `Запас: ${number(r.reserve)}%`,
-      `Размер порции: ${number(r.portionWidth)} × ${number(r.portionLength)} см`,
+      `Ориентир площади порции: ${number(r.portionWidth)} × ${number(r.portionLength)} см = ${number(r.portionArea)} см²`,
+      `Рекомендуемая нарезка: ${cutText(r).toLowerCase()}`,
       `Нужно заложить: ${r.targetPortions} порций`,
       `Рекомендуемый размер: ${sizeText(r)}`,
       `Расчётная вместимость: ${r.capacity} порций`,
       '',
-      'Расчёт основан на площади нарезки и предполагает ровные вертикальные порции одинакового размера.'
+      'Для круглого торта предполагается клиновидная нарезка, для прямоугольного — нарезка сеткой.'
     ].join('\n');
     try {
       if (!navigator.clipboard || !window.isSecureContext) throw new Error('Clipboard unavailable');
