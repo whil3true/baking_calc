@@ -20,8 +20,13 @@
     'trash-2': '<path d="M3 6h18M8 6V4h8v2M19 6l-1 15H6L5 6M10 11v6M14 11v6"/>',
     'chevron-down': '<path d="m6 9 6 6 6-6"/>',
     'check': '<path d="m5 12 4 4L19 6"/>',
+    'check-circle-2': '<circle cx="12" cy="12" r="9"/><path d="m8 12 2.5 2.5L16 9"/>',
     'copy': '<rect x="8" y="8" width="12" height="12" rx="2"/><path d="M16 8V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h2"/>',
-    'rotate-ccw': '<path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5"/>'
+    'rotate-ccw': '<path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5"/>',
+    'refresh-cw': '<path d="M20 7v5h-5"/><path d="M4 17v-5h5"/><path d="M6.1 8a7 7 0 0 1 11.7-2.6L20 8"/><path d="M17.9 16a7 7 0 0 1-11.7 2.6L4 16"/>',
+    'move-vertical': '<path d="m8 7 4-4 4 4"/><path d="M12 3v18"/><path d="m8 17 4 4 4-4"/>',
+    'receipt': '<path d="M5 3v18l2-1 2 1 2-1 2 1 2-1 2 1 2-1V3l-2 1-2-1-2 1-2-1-2 1-2-1-2 1Z"/><path d="M9 8h6M9 12h6M9 16h4"/>',
+    'wallet': '<path d="M4 6a2 2 0 0 1 2-2h12v4H6a2 2 0 0 0 0 4h14v7a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6Z"/><path d="M16 12h4v4h-4a2 2 0 0 1 0-4Z"/>'
   };
 
   const fallback = '<circle cx="12" cy="12" r="9"/><path d="M9 12h6M12 9v6"/>';
