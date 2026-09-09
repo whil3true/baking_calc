@@ -121,16 +121,6 @@
     setTimeout(() => document.getElementById('resultsSection').scrollIntoView({ behavior: 'smooth', block: 'start' }), 100);
   };
 
-  loadState = function () {
-    try {
-      const saved = localStorage.getItem('bakecalc_state');
-      if (!saved) return;
-      state = BakeCalcMath.restoreState(JSON.parse(saved), DEFAULT_STATE);
-    } catch (error) {
-      console.warn('Load error:', error);
-      state = JSON.parse(JSON.stringify(DEFAULT_STATE));
-    }
-  };
 
   copyRecipe = async function () {
     const text = generateRecipeText();
@@ -169,8 +159,6 @@
       costBox.appendChild(warning);
     }
     ensurePriceCalcLink();
-    loadState();
-    renderAll();
     window.lucide?.createIcons();
   }
 

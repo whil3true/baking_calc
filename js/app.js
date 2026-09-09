@@ -40,7 +40,7 @@ const DEMO_RECIPE = {
   result: null
 };
 
-let state = JSON.parse(JSON.stringify(DEFAULT_STATE));
+let state = BakeCalcState.create(DEFAULT_STATE);
 
 function validateNumber(value, defaultValue = 0) {
   if (isNaN(value) || value === null || value === undefined || value < 0) return defaultValue;
@@ -318,11 +318,11 @@ function calculateRecipe() {
   setTimeout(() => document.getElementById('resultsSection').scrollIntoView({ behavior: 'smooth', block: 'start' }), 100);
 }
 function recalculate() { state.result = null; renderResults(); saveState(); window.scrollTo({ top: 0, behavior: 'smooth' }); }
-function loadDemoRecipe() { state = JSON.parse(JSON.stringify(DEMO_RECIPE)); saveState(); renderAll(); lucide.createIcons(); showToast('Демо-рецепт «Классический бисквит» загружен'); }
+function loadDemoRecipe() { state = BakeCalcState.clone(DEMO_RECIPE); saveState(); renderAll(); lucide.createIcons(); showToast('Демо-рецепт «Классический бисквит» загружен'); }
 function clearAll() {
   if (state.ingredients.length === 0 && state.extraCosts.length === 0 && !state.recipeName) return;
   if (!confirm('Очистить все поля? Это действие нельзя отменить.')) return;
-  state = JSON.parse(JSON.stringify(DEFAULT_STATE)); saveState(); renderAll(); lucide.createIcons(); showToast('Все поля очищены');
+  state = BakeCalcState.create(DEFAULT_STATE); saveState(); renderAll(); lucide.createIcons(); showToast('Все поля очищены');
 }
 function formatForm(form) {
   let result = form.type === 'circle' ? `Круглая ⌀${form.diameter} см` : `Прямоугольная ${form.length}×${form.width} см`;
@@ -353,24 +353,8 @@ async function copyRecipe() {
   } catch { showToast('Не удалось скопировать'); }
 }
 
-function saveState() { try { localStorage.setItem('bakecalc_state', JSON.stringify(state)); } catch (e) { console.warn('Save error:', e); } }
-function loadState() {
-  try {
-    const saved = localStorage.getItem('bakecalc_state');
-    if (!saved) return;
-    const parsed = JSON.parse(saved);
-    state = {
-      recipeName: parsed.recipeName || '',
-      originalForm: { ...DEFAULT_STATE.originalForm, ...(parsed.originalForm || {}) },
-      newForm: { ...DEFAULT_STATE.newForm, ...(parsed.newForm || {}) },
-      useHeightOriginal: !!parsed.useHeightOriginal,
-      useHeightNew: !!parsed.useHeightNew,
-      ingredients: Array.isArray(parsed.ingredients) ? parsed.ingredients.map(ing => ({ ...ing, packageUnit: ing.packageUnit || ing.unit || 'г' })) : [],
-      extraCosts: Array.isArray(parsed.extraCosts) ? parsed.extraCosts : JSON.parse(JSON.stringify(DEFAULT_STATE.extraCosts)),
-      result: parsed.result || null
-    };
-  } catch (e) { console.warn('Load error:', e); state = JSON.parse(JSON.stringify(DEFAULT_STATE)); }
-}
+function saveState() { BakeCalcState.save(localStorage, state); }
+function loadState() { state = BakeCalcState.load(localStorage, DEFAULT_STATE, BakeCalcMath.restoreState); }
 function renderAll() {
   document.getElementById('recipeNameInput').value = state.recipeName;
   document.getElementById('useHeightOriginal').checked = state.useHeightOriginal;
