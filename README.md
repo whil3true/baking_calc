@@ -166,3 +166,8 @@ Tailwind полностью удалён из runtime и зависимосте�
 ## CSS без Tailwind
 
 Сайт не использует Tailwind CDN, Tailwind CLI или пакет `tailwindcss`. Исторические utility-подобные имена классов сохранены в разметке ради безопасной миграции и реализованы обычными локальными правилами в `css/utilities.css`. Это позволяет постепенно переводить разметку на семантические классы без runtime-компиляции и без сборки для GitHub Pages.
+
+
+## Архитектура BakeCalc
+
+BakeCalc постепенно выведен из legacy-монолита: `bakecalc-math.js` отвечает за чистые расчёты, `bakecalc-state.js` — за состояние/хранилище, `bakecalc-view.js` — за DOM-рендеринг, `bakecalc-events.js` — за делегированные события, а `app.js` остаётся контроллером пользовательских действий. Inline `onclick/oninput/onchange` на странице BakeCalc больше не используются.

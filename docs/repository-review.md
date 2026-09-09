@@ -21,7 +21,7 @@
 
 Переработанные калькуляторы разделяют чистую математику и браузерный контроллер:
 
-- `js/bakecalc-math.js` + legacy `js/app.js` и `js/bakecalc-hardening.js`;
+- BakeCalc: `js/bakecalc-math.js` + `js/bakecalc-state.js` + `js/bakecalc-view.js` + `js/bakecalc-events.js` + контроллер `js/app.js` + временный compatibility-слой `js/bakecalc-hardening.js`;
 - `js/creamcalc-math.js` + `js/creamcalc.js`;
 - `js/portioncalc-math.js` + `js/portioncalc.js`;
 - `js/gelatincalc-math.js` + `js/gelatincalc.js`;
@@ -113,7 +113,7 @@ BakeCalc → демо-рецепт → расчёт себестоимости �
 ## Оставшиеся технические риски
 
 1. **Оставшиеся CDN-зависимости.** Tailwind удалён полностью; Inter CDN и Lucide CDN удалены; интерфейс использует системный шрифт и локальный SVG-рендерер иконок.
-2. **BakeCalc остаётся наиболее legacy-страницей.** Первый этап рефакторинга уже отделил состояние/`localStorage` и сделал runtime-зависимости явными; следующая цель — вынести DOM-рендеринг и события из `js/app.js` без изменения интерфейса.
+2. **BakeCalc всё ещё имеет legacy-контроллер.** Состояние, DOM-рендеринг и события уже разделены; следующий этап — убрать оставшиеся monkey-patch переопределения из `js/bakecalc-hardening.js` и затем сократить глобальный API `app.js`.
 3. **SEO metadata добавляются общим JavaScript-слоем.** Это удобно для текущего статического проекта, но после появления сборки лучше генерировать critical meta/canonical/JSON-LD непосредственно в HTML.
 4. **Нет полноценного visual regression testing.** Browser smoke проверяет работоспособность, но не внешний вид по эталонным скриншотам.
 5. **Нет backend.** Для текущих калькуляторов это нормально; аккаунты и синхронизация потребуют другой архитектуры.

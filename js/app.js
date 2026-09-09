@@ -53,16 +53,7 @@ function escapeHtml(str) {
 }
 
 function showToast(message) {
-  const toast = document.getElementById('toast');
-  const text = document.getElementById('toastText');
-  text.textContent = message;
-  toast.classList.remove('translate-y-[-200%]', 'opacity-0');
-  toast.classList.add('translate-y-0', 'opacity-100');
-  clearTimeout(window._toastTimer);
-  window._toastTimer = setTimeout(() => {
-    toast.classList.add('translate-y-[-200%]', 'opacity-0');
-    toast.classList.remove('translate-y-0', 'opacity-100');
-  }, 2500);
+  BakeCalcView.showToast(message);
 }
 
 function generateId() { return Date.now() + Math.floor(Math.random() * 1000); }
@@ -133,162 +124,94 @@ function calculateTotalWeight() {
 
 function updateTotals() {
   const extraTotal = calculateExtraCostsTotal();
-  document.getElementById('extraCostsTotal').textContent = `${extraTotal.toFixed(2)} ₽`;
+  BakeCalcView.updateExtraCostsTotal(extraTotal);
   if (state.result) renderResults();
   saveState();
 }
 
 function renderFormTabs(formKey) {
-  const form = state[formKey];
-  document.getElementById(`${formKey}Tabs`).innerHTML = `
-    <button onclick="setFormType('${formKey}', 'circle')" class="flex-1 px-4 py-2.5 rounded-xl text-sm font-semibold transition-all ${form.type === 'circle' ? 'tab-active shadow-sm' : 'tab-inactive'}"><span class="inline-flex items-center gap-1.5"><i data-lucide="circle" class="w-4 h-4"></i>Круглая</span></button>
-    <button onclick="setFormType('${formKey}', 'rect')" class="flex-1 px-4 py-2.5 rounded-xl text-sm font-semibold transition-all ${form.type === 'rect' ? 'tab-active shadow-sm' : 'tab-inactive'}"><span class="inline-flex items-center gap-1.5"><i data-lucide="square" class="w-4 h-4"></i>Прямоугольная</span></button>`;
+  BakeCalcView.renderFormTabs(formKey, state);
 }
 
 function renderFormFields(formKey) {
-  const form = state[formKey];
-  const container = document.getElementById(`${formKey}Fields`);
-  let html = '';
-  if (form.type === 'circle') {
-    html = `<label class="block"><span class="text-xs text-dark/60 mb-1 block">Диаметр, см</span><input type="number" step="any" min="0" inputmode="decimal" value="${form.diameter}" oninput="updateForm('${formKey}', 'diameter', parseFloat(this.value))" class="input-field w-full"></label>`;
-  } else {
-    html = `<div class="grid grid-cols-2 gap-3"><label class="block"><span class="text-xs text-dark/60 mb-1 block">Длина, см</span><input type="number" step="any" min="0" inputmode="decimal" value="${form.length}" oninput="updateForm('${formKey}', 'length', parseFloat(this.value))" class="input-field w-full"></label><label class="block"><span class="text-xs text-dark/60 mb-1 block">Ширина, см</span><input type="number" step="any" min="0" inputmode="decimal" value="${form.width}" oninput="updateForm('${formKey}', 'width', parseFloat(this.value))" class="input-field w-full"></label></div>`;
-  }
-  const useHeight = formKey === 'originalForm' ? state.useHeightOriginal : state.useHeightNew;
-  if (useHeight) html += `<label class="block mt-3"><span class="text-xs text-dark/60 mb-1 block">Высота бортиков, см</span><input type="number" step="any" min="0" inputmode="decimal" value="${form.height}" oninput="updateForm('${formKey}', 'height', parseFloat(this.value))" class="input-field w-full"></label>`;
-  container.innerHTML = html;
+  BakeCalcView.renderFormFields(formKey, state);
 }
 
-function createIngredientRow(ing) {
-  const tr = document.createElement('tr');
-  tr.className = 'border-b border-soft/60 fade-in';
-  tr.dataset.id = ing.id;
-  tr.innerHTML = `<td class="py-2 pr-2"><input type="text" value="${escapeHtml(ing.name)}" placeholder="Название" oninput="onIngredientInput(${ing.id}, 'name', this.value)" class="input-field w-full !h-11 !text-sm min-w-0"></td><td class="py-2 px-2"><input type="number" step="any" min="0" inputmode="decimal" value="${ing.amount}" placeholder="0" oninput="onIngredientInput(${ing.id}, 'amount', parseFloat(this.value) || 0)" class="input-field w-20 !h-11 !text-sm min-w-0"></td><td class="py-2 px-2"><select onchange="onIngredientInput(${ing.id}, 'unit', this.value)" class="input-field !h-11 !text-sm !px-2 w-16 min-w-0"><option value="г" ${ing.unit === 'г' ? 'selected' : ''}>г</option><option value="мл" ${ing.unit === 'мл' ? 'selected' : ''}>мл</option><option value="шт" ${ing.unit === 'шт' ? 'selected' : ''}>шт</option></select></td><td class="py-2 pl-1"><button onclick="deleteIngredient(${ing.id})" class="text-dark/30 hover:text-red-500 transition-colors p-1" title="Удалить"><i data-lucide="x" class="w-4 h-4"></i></button></td>`;
-  return tr;
+function createIngredientRow(ingredient) {
+  return BakeCalcView.createIngredientRow(ingredient);
 }
 
-function createPriceRow(ing) {
-  const tr = document.createElement('tr');
-  tr.className = 'border-b border-soft/60';
-  tr.dataset.id = ing.id;
-  const pkgUnit = ing.packageUnit || ing.unit || 'г';
-  tr.innerHTML = `<td class="py-2 pr-2 text-sm" data-name-cell>${escapeHtml(ing.name) || '—'}</td><td class="py-2 px-2"><input type="number" step="any" min="0" inputmode="decimal" value="${ing.price}" placeholder="0.00" oninput="onIngredientInput(${ing.id}, 'price', parseFloat(this.value) || 0)" class="input-field !h-10 !text-sm w-20 min-w-0"></td><td class="py-2 px-2"><input type="number" step="any" min="0" inputmode="decimal" value="${ing.packageWeight}" placeholder="0" oninput="onIngredientInput(${ing.id}, 'packageWeight', parseFloat(this.value) || 0)" class="input-field !h-10 !text-sm w-16 min-w-0"></td><td class="py-2 pl-2"><select onchange="onIngredientInput(${ing.id}, 'packageUnit', this.value)" class="input-field !h-10 !text-sm !px-2 w-14 min-w-0"><option value="г" ${pkgUnit === 'г' ? 'selected' : ''}>г</option><option value="кг" ${pkgUnit === 'кг' ? 'selected' : ''}>кг</option><option value="мл" ${pkgUnit === 'мл' ? 'selected' : ''}>мл</option><option value="л" ${pkgUnit === 'л' ? 'selected' : ''}>л</option><option value="шт" ${pkgUnit === 'шт' ? 'selected' : ''}>шт</option></select></td>`;
-  return tr;
+function createPriceRow(ingredient) {
+  return BakeCalcView.createPriceRow(ingredient);
 }
 
 function addIngredient() {
-  const ing = { id: generateId(), name: '', amount: 0, unit: 'г', price: 0, packageWeight: 1000, packageUnit: 'г' };
-  state.ingredients.push(ing);
-  document.getElementById('ingredientsPlaceholder').style.display = 'none';
-  document.getElementById('pricesPlaceholder').style.display = 'none';
-  const ingRow = createIngredientRow(ing);
-  document.getElementById('ingredientsBody').appendChild(ingRow);
-  document.getElementById('pricesBody').appendChild(createPriceRow(ing));
-  lucide.createIcons();
+  const ingredient = { id: generateId(), name: '', amount: 0, unit: 'г', price: 0, packageWeight: 1000, packageUnit: 'г' };
+  state.ingredients.push(ingredient);
+  renderAllIngredients();
   saveState();
-  setTimeout(() => { const input = ingRow.querySelector('input[type="text"]'); if (input) input.focus(); }, 50);
+  BakeCalcView.focusLastIngredient();
 }
 
 function deleteIngredient(id) {
-  const idx = state.ingredients.findIndex(i => i.id === id);
-  if (idx === -1) return;
-  state.ingredients.splice(idx, 1);
-  document.querySelector(`#ingredientsBody tr[data-id="${id}"]`)?.remove();
-  document.querySelector(`#pricesBody tr[data-id="${id}"]`)?.remove();
-  if (state.ingredients.length === 0) {
-    document.getElementById('ingredientsPlaceholder').style.display = 'block';
-    document.getElementById('pricesPlaceholder').style.display = 'block';
-  }
-  lucide.createIcons();
+  const index = state.ingredients.findIndex(item => item.id === id);
+  if (index === -1) return;
+  state.ingredients.splice(index, 1);
+  renderAllIngredients();
   updateTotals();
 }
 
 function onIngredientInput(id, field, value) {
-  const ing = state.ingredients.find(i => i.id === id);
-  if (!ing) return;
-  ing[field] = ['amount', 'price', 'packageWeight'].includes(field) ? validateNumber(value, 0) : value;
-  if (field === 'name') document.querySelector(`#pricesBody tr[data-id="${id}"] [data-name-cell]`)?.replaceChildren(document.createTextNode(value || '—'));
+  const ingredient = state.ingredients.find(item => item.id === id);
+  if (!ingredient) return;
+  ingredient[field] = ['amount', 'price', 'packageWeight'].includes(field) ? validateNumber(value, 0) : value;
+  if (field === 'name') BakeCalcView.updatePriceName(id, value);
   updateTotals();
 }
 
 function renderAllIngredients() {
-  const ingBody = document.getElementById('ingredientsBody');
-  const priceBody = document.getElementById('pricesBody');
-  ingBody.innerHTML = '';
-  priceBody.innerHTML = '';
-  const empty = state.ingredients.length === 0;
-  document.getElementById('ingredientsPlaceholder').style.display = empty ? 'block' : 'none';
-  document.getElementById('pricesPlaceholder').style.display = empty ? 'block' : 'none';
-  state.ingredients.forEach(ing => { ingBody.appendChild(createIngredientRow(ing)); priceBody.appendChild(createPriceRow(ing)); });
+  BakeCalcView.renderAllIngredients(state);
 }
 
 function createExtraCostRow(cost) {
-  const div = document.createElement('div');
-  div.className = 'flex flex-wrap sm:flex-nowrap items-center gap-2 extra-cost-row';
-  div.dataset.id = cost.id;
-  div.innerHTML = `<input type="text" value="${escapeHtml(cost.name)}" placeholder="Название расхода" oninput="onExtraCostInput(${cost.id}, 'name', this.value)" class="input-field flex-1 min-w-0 !h-11 !text-sm order-1 sm:order-none"><input type="number" step="any" min="0" inputmode="decimal" value="${cost.amount}" placeholder="0.00" oninput="onExtraCostInput(${cost.id}, 'amount', parseFloat(this.value) || 0)" class="input-field w-24 sm:w-28 shrink-0 min-w-0 !h-11 !text-sm order-2 sm:order-none"><button onclick="deleteExtraCost(${cost.id})" class="w-8 h-8 shrink-0 flex items-center justify-center text-dark/30 hover:text-red-500 transition-colors order-3 sm:order-none" title="Удалить"><i data-lucide="trash-2" class="w-4 h-4"></i></button>`;
-  return div;
+  return BakeCalcView.createExtraCostRow(cost);
 }
 
 function addExtraCost() {
-  const cost = { id: generateId(), name: '', amount: 0 };
-  state.extraCosts.push(cost);
-  const row = createExtraCostRow(cost);
-  document.getElementById('extraCostsContainer').appendChild(row);
-  lucide.createIcons();
+  state.extraCosts.push({ id: generateId(), name: '', amount: 0 });
+  renderAllExtraCosts();
   saveState();
-  setTimeout(() => row.querySelector('input[type="text"]')?.focus(), 50);
+  BakeCalcView.focusLastExtraCost();
 }
 
 function deleteExtraCost(id) {
-  const idx = state.extraCosts.findIndex(c => c.id === id);
-  if (idx === -1) return;
-  state.extraCosts.splice(idx, 1);
-  document.querySelector(`#extraCostsContainer div[data-id="${id}"]`)?.remove();
+  const index = state.extraCosts.findIndex(item => item.id === id);
+  if (index === -1) return;
+  state.extraCosts.splice(index, 1);
+  renderAllExtraCosts();
   updateTotals();
 }
 
 function onExtraCostInput(id, field, value) {
-  const cost = state.extraCosts.find(c => c.id === id);
+  const cost = state.extraCosts.find(item => item.id === id);
   if (!cost) return;
   cost[field] = field === 'amount' ? validateNumber(value, 0) : value;
-  const extraTotal = calculateExtraCostsTotal();
-  document.getElementById('extraCostsTotal').textContent = `${extraTotal.toFixed(2)} ₽`;
+  BakeCalcView.updateExtraCostsTotal(calculateExtraCostsTotal());
   if (state.result) renderResults();
   saveState();
 }
 
 function renderAllExtraCosts() {
-  const container = document.getElementById('extraCostsContainer');
-  container.innerHTML = '';
-  state.extraCosts.forEach(cost => container.appendChild(createExtraCostRow(cost)));
-  document.getElementById('extraCostsTotal').textContent = `${calculateExtraCostsTotal().toFixed(2)} ₽`;
+  BakeCalcView.renderAllExtraCosts(state, calculateExtraCostsTotal());
 }
 
 function renderResults() {
-  if (!state.result) { document.getElementById('resultsSection').classList.add('hidden'); return; }
-  document.getElementById('resultsSection').classList.remove('hidden');
-  document.getElementById('roundResultsCheckbox').checked = state.result.roundResults;
-  const k = state.result.coefficient;
-  const pct = ((k - 1) * 100).toFixed(0);
-  document.getElementById('resultCoefficientBadge').innerHTML = `<i data-lucide="calculator" class="w-4 h-4"></i><span>Коэффициент: ×${k.toFixed(2)} (порция ${pct >= 0 ? 'увеличена' : 'уменьшена'} на ${Math.abs(pct)}%)</span>`;
-  document.getElementById('resultsBody').innerHTML = state.ingredients.map(ing => {
-    const amount = validateNumber(ing.amount, 0) * k;
-    const display = state.result.roundResults ? Math.round(amount) : amount.toFixed(1);
-    return `<tr class="border-b border-soft/60"><td class="text-base">${escapeHtml(ing.name) || 'Без названия'}</td><td class="text-right text-xl font-bold text-caramel">${display} <span class="text-sm font-normal text-dark/50">${ing.unit}</span></td></tr>`;
-  }).join('');
-  document.getElementById('resultItemsCount').textContent = state.ingredients.length;
-  document.getElementById('resultTotalWeight').textContent = `${calculateTotalWeight()} г`;
-  const ingredientsCost = calculateIngredientsCost();
-  const extraCostsTotal = calculateExtraCostsTotal();
-  const hasCosts = ingredientsCost > 0 || extraCostsTotal > 0 || state.ingredients.some(ing => ing.price > 0);
-  if (hasCosts) {
-    document.getElementById('resultCostSection').classList.remove('hidden');
-    document.getElementById('resultIngredientsCost').textContent = `${ingredientsCost.toFixed(2)} ₽`;
-    document.getElementById('resultExtraCostsTotal').textContent = `${extraCostsTotal.toFixed(2)} ₽`;
-    document.getElementById('resultTotalCost').textContent = `${(ingredientsCost + extraCostsTotal).toFixed(2)} ₽`;
-  } else document.getElementById('resultCostSection').classList.add('hidden');
-  lucide.createIcons();
+  BakeCalcView.renderResults({
+    state,
+    totalWeight: calculateTotalWeight(),
+    ingredientsCost: calculateIngredientsCost(),
+    extraCostsTotal: calculateExtraCostsTotal()
+  });
 }
 
 function onRecipeNameInput(value) { state.recipeName = value; saveState(); }
@@ -301,11 +224,9 @@ function toggleHeight(formKey) {
   saveState(); lucide.createIcons();
 }
 function togglePricesAccordion() {
-  const content = document.getElementById('pricesAccordionContent');
-  const icon = document.getElementById('pricesAccordionIcon');
-  content.classList.toggle('hidden');
-  icon.style.transform = content.classList.contains('hidden') ? 'rotate(0deg)' : 'rotate(180deg)';
+  BakeCalcView.togglePricesAccordion();
 }
+
 function toggleRoundResults() { if (!state.result) return; state.result.roundResults = document.getElementById('roundResultsCheckbox').checked; renderResults(); saveState(); }
 
 function calculateRecipe() {
@@ -356,9 +277,41 @@ async function copyRecipe() {
 function saveState() { BakeCalcState.save(localStorage, state); }
 function loadState() { state = BakeCalcState.load(localStorage, DEFAULT_STATE, BakeCalcMath.restoreState); }
 function renderAll() {
-  document.getElementById('recipeNameInput').value = state.recipeName;
-  document.getElementById('useHeightOriginal').checked = state.useHeightOriginal;
-  document.getElementById('useHeightNew').checked = state.useHeightNew;
-  renderFormTabs('originalForm'); renderFormTabs('newForm'); renderFormFields('originalForm'); renderFormFields('newForm'); renderAllIngredients(); renderAllExtraCosts(); renderResults();
+  BakeCalcView.syncStaticFields(state);
+  renderFormTabs('originalForm');
+  renderFormTabs('newForm');
+  renderFormFields('originalForm');
+  renderFormFields('newForm');
+  renderAllIngredients();
+  renderAllExtraCosts();
+  renderResults();
 }
-window.addEventListener('DOMContentLoaded', () => { loadState(); renderAll(); lucide.createIcons(); });
+
+function bindUiEvents() {
+  BakeCalcEvents.bind({
+    clearAll: () => clearAll(),
+    addIngredient: () => addIngredient(),
+    loadDemoRecipe: () => loadDemoRecipe(),
+    togglePricesAccordion: () => togglePricesAccordion(),
+    addExtraCost: () => addExtraCost(),
+    calculateRecipe: () => calculateRecipe(),
+    copyRecipe: () => copyRecipe(),
+    recalculate: () => recalculate(),
+    setFormType: (formKey, type) => setFormType(formKey, type),
+    deleteIngredient: id => deleteIngredient(id),
+    deleteExtraCost: id => deleteExtraCost(id),
+    onRecipeNameInput: value => onRecipeNameInput(value),
+    updateForm: (formKey, field, value) => updateForm(formKey, field, value),
+    onIngredientInput: (id, field, value) => onIngredientInput(id, field, value),
+    onExtraCostInput: (id, field, value) => onExtraCostInput(id, field, value),
+    toggleHeight: formKey => toggleHeight(formKey),
+    toggleRoundResults: () => toggleRoundResults()
+  });
+}
+
+window.addEventListener('DOMContentLoaded', () => {
+  loadState();
+  renderAll();
+  bindUiEvents();
+  lucide.createIcons();
+});
