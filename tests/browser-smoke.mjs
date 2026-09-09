@@ -67,6 +67,14 @@ try {
     '#converterResults',
     '#converterResultValue'
   );
+
+  await runSmoke(
+    'PriceCalc',
+    'pricecalc.html',
+    page => page.getByRole('button', { name: 'Рассчитать цену' }).click(),
+    '#priceResults',
+    '#priceSalePrice'
+  );
 } finally {
   await browser.close();
 }
