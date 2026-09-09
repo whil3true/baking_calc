@@ -1,0 +1,32 @@
+name: Refactor BakeCalc view/events once
+
+on:
+  push:
+    branches: [refactor/bakecalc-view-events]
+
+permissions:
+  contents: write
+
+jobs:
+  migrate:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout branch
+        uses: actions/checkout@v4
+        with:
+          ref: refactor/bakecalc-view-events
+      - name: Apply view/events refactor
+        run: python3 scripts/refactor_bakecalc_view_events.py
+      - name: Remove one-shot migration files
+        run: |
+          rm scripts/refactor_bakecalc_view_events.py
+          rm .github/workflows/refactor-bakecalc-view-events.yml
+      - name: Commit migration
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git diff --cached --quiet && exit 0
+          git commit -m "refactor: separate BakeCalc view and delegated events"
+          git push origin HEAD:refactor/bakecalc-view-events
