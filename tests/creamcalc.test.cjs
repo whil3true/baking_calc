@@ -69,6 +69,7 @@ test('rounding avoids floating-point noise but rounds real fractions upward', ()
   const input = { shape: 'rect', length: '10', width: '10', layers: '1', fillingThickness: '10', fillingDensity: '1.1', coverTop: false, coverSides: false, reserve: '0' };
   assert.equal(result(input).prepare, 110);
   assert.equal(result({ ...input, fillingDensity: '1.100001' }).prepare, 120);
+  assert.equal(result({ ...input, fillingDensity: '0.00000000000000001' }).prepare, 10);
 });
 
 test('doubling cake height doubles only the side coating', () => {

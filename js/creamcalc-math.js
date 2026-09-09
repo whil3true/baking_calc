@@ -106,7 +106,7 @@ const CreamCalc = (() => {
     const total = subtotal + reserve;
     // Avoid adding another 10 g due only to floating-point noise (100 × 1.1).
     const portions = total / 10;
-    const prepare = Math.ceil(portions - Number.EPSILON * Math.max(1, portions)) * 10;
+    const prepare = Math.ceil(portions - Number.EPSILON * portions) * 10;
     const result = {
       fillingVolume, sidesVolume, topVolume, filling, sides, top: topMass,
       subtotal, reserve, total, prepare
