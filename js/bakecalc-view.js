@@ -118,7 +118,29 @@ const BakeCalcView = (() => {
     icon.style.transform = content.classList.contains('hidden') ? 'rotate(0deg)' : 'rotate(180deg)';
   }
 
+  function ensureResultMeta() {
+    const costSection = byId('resultCostSection');
+    const costBox = costSection?.querySelector('[class~="bg-soft/40"]');
+    if (costBox && !byId('resultCostWarning')) {
+      const warning = document.createElement('p');
+      warning.id = 'resultCostWarning';
+      warning.className = 'mt-3 text-xs leading-relaxed';
+      warning.style.color = '#912018';
+      warning.hidden = true;
+      costBox.appendChild(warning);
+    }
+    if (costSection && !byId('openPriceCalc')) {
+      const link = document.createElement('a');
+      link.id = 'openPriceCalc';
+      link.className = 'btn-ghost w-full mt-3 py-3 rounded-xl font-semibold flex items-center justify-center gap-2';
+      link.textContent = 'Рассчитать цену продажи';
+      link.hidden = true;
+      costSection.insertAdjacentElement('afterend', link);
+    }
+  }
+
   function renderResults({ state, totalWeight, ingredientsCost, extraCostsTotal, costDetails, priceCalcHref }) {
+    ensureResultMeta();
     const section = byId('resultsSection');
     const priceLink = byId('openPriceCalc');
     const warning = byId('resultCostWarning');
@@ -144,7 +166,6 @@ const BakeCalcView = (() => {
     }).join('');
     byId('resultItemsCount').textContent = state.ingredients.length;
     byId('resultTotalWeight').textContent = `${totalWeight} г`;
-
     const anyPricing = state.ingredients.some(item => Number(item.price) > 0) || extraCostsTotal > 0;
     const hasCosts = ingredientsCost > 0 || extraCostsTotal > 0 || anyPricing;
     const costSection = byId('resultCostSection');
@@ -153,10 +174,7 @@ const BakeCalcView = (() => {
       byId('resultIngredientsCost').textContent = `${ingredientsCost.toFixed(2)} ₽`;
       byId('resultExtraCostsTotal').textContent = `${extraCostsTotal.toFixed(2)} ₽`;
       byId('resultTotalCost').textContent = `${(ingredientsCost + extraCostsTotal).toFixed(2)} ₽`;
-    } else {
-      costSection.classList.add('hidden');
-    }
-
+    } else costSection.classList.add('hidden');
     if (warning) {
       warning.hidden = !anyPricing || costDetails.complete;
       warning.textContent = warning.hidden ? '' : `Себестоимость неполная: ${costDetails.issues.join('; ')}.`;
@@ -173,9 +191,12 @@ const BakeCalcView = (() => {
     const recipe = byId('recipeNameInput');
     const originalHeight = byId('useHeightOriginal');
     const newHeight = byId('useHeightNew');
+    const weightLabel = byId('resultTotalWeight')?.previousElementSibling;
     if (recipe) recipe.value = state.recipeName;
     if (originalHeight) originalHeight.checked = state.useHeightOriginal;
     if (newHeight) newHeight.checked = state.useHeightNew;
+    if (weightLabel) weightLabel.textContent = 'Вес ингредиентов, указанных в граммах';
+    ensureResultMeta();
   }
 
   function focusLastIngredient() {
