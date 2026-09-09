@@ -22,6 +22,10 @@ const publicUrl = page => page === 'index.html'
   ? 'https://whil3true.github.io/baking_calc/'
   : `https://whil3true.github.io/baking_calc/${page}`;
 
+function sitemapUrls(xml) {
+  return [...xml.matchAll(/<loc>\s*([^<]+?)\s*<\/loc>/g)].map(match => match[1]);
+}
+
 test('SEO configuration covers every public page', () => {
   for (const page of pages) {
     assert.ok(fs.existsSync(path.join(root, page)), `Missing page ${page}`);
@@ -30,9 +34,11 @@ test('SEO configuration covers every public page', () => {
 });
 
 test('sitemap contains every public calculator exactly once', () => {
+  const urls = sitemapUrls(sitemap);
+  assert.equal(urls.length, pages.length, 'Sitemap must contain exactly one URL per public page');
   for (const page of pages) {
     const url = publicUrl(page);
-    assert.equal(sitemap.split(url).length - 1, 1, `Sitemap must contain ${url} exactly once`);
+    assert.equal(urls.filter(entry => entry === url).length, 1, `Sitemap must contain ${url} exactly once`);
   }
 });
 
