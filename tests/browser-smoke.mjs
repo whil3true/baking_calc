@@ -56,6 +56,17 @@ try {
     '#gelatinResults',
     '#gelatinConverted'
   );
+
+  await runSmoke(
+    'ConverterCalc',
+    'convertercalc.html',
+    async page => {
+      await page.locator('#density').fill('0.8');
+      await page.getByRole('button', { name: 'Конвертировать' }).click();
+    },
+    '#converterResults',
+    '#converterResultValue'
+  );
 } finally {
   await browser.close();
 }
