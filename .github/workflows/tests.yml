@@ -33,10 +33,10 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 22
-      - name: Install Playwright
-        run: |
-          npm install --no-save playwright@1.55.0
-          npx playwright install --with-deps chromium
+      - name: Install Playwright library
+        run: npm install --no-save playwright@1.55.0
+      - name: Verify system Chrome
+        run: google-chrome --version || google-chrome-stable --version
       - name: Start static server
         run: |
           python3 -m http.server 8000 --bind 127.0.0.1 > /tmp/bakecalc-http.log 2>&1 &
