@@ -48,6 +48,19 @@
     return costDetails().total;
   };
 
+  function splitExtraCostsForPriceCalc() {
+    let packagingCost = 0;
+    let extraCost = 0;
+    for (const item of state.extraCosts || []) {
+      const amount = Number(item?.amount);
+      if (!Number.isFinite(amount) || amount <= 0) continue;
+      const name = typeof item?.name === 'string' ? item.name.toLowerCase() : '';
+      if (/(упаков|короб)/i.test(name)) packagingCost += amount;
+      else extraCost += amount;
+    }
+    return { packagingCost, extraCost };
+  }
+
   function ensurePriceCalcLink() {
     let link = document.getElementById('openPriceCalc');
     if (link) return link;
@@ -73,11 +86,12 @@
       return;
     }
 
+    const extras = splitExtraCostsForPriceCalc();
     const params = new URLSearchParams({
       source: 'bakecalc',
       ingredientsCost: details.total.toFixed(2),
-      packagingCost: '0',
-      extraCost: calculateExtraCostsTotal().toFixed(2)
+      packagingCost: extras.packagingCost.toFixed(2),
+      extraCost: extras.extraCost.toFixed(2)
     });
     if (typeof state.recipeName === 'string' && state.recipeName.trim()) params.set('recipe', state.recipeName.trim());
     link.href = `pricecalc.html?${params.toString()}`;
