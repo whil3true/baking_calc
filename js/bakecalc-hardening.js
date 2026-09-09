@@ -107,7 +107,8 @@
   function finishSetup() {
     const weightLabel = document.querySelector('#resultTotalWeight')?.previousElementSibling;
     if (weightLabel) weightLabel.textContent = 'Вес ингредиентов, указанных в граммах';
-    const costBox = document.querySelector('#resultCostSection .bg-soft\/40');
+    const costSection = document.getElementById('resultCostSection');
+    const costBox = costSection?.querySelector('[class~="bg-soft/40"]');
     if (costBox && !document.getElementById('resultCostWarning')) {
       const warning = document.createElement('p');
       warning.id = 'resultCostWarning';
