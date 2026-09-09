@@ -40,6 +40,15 @@ test('app delegates persistence to BakeCalcState', () => {
   assert.doesNotMatch(app, /localStorage\.getItem\(['"]bakecalc_state/);
 });
 
+test('state module stays independent from DOM and browser globals', () => {
+  const stateModule = read('js/bakecalc-state.js');
+  assert.doesNotMatch(stateModule, /\bdocument\b/);
+  assert.doesNotMatch(stateModule, /\bwindow\b/);
+  assert.doesNotMatch(stateModule, /\blocalStorage\b/);
+  assert.match(stateModule, /storage\.getItem/);
+  assert.match(stateModule, /storage\.setItem/);
+});
+
 test('hardening layer does not replace persistence anymore', () => {
   const hardening = read('js/bakecalc-hardening.js');
   assert.doesNotMatch(hardening, /loadState\s*=\s*function/);
