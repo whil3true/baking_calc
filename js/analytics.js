@@ -1,3 +1,13 @@
+/* Shared site behavior + Yandex.Metrika. */
+
+/* SEO metadata is centralized so every calculator stays consistent. */
+if (!document.querySelector('script[data-bakecalc-seo]')) {
+  const seoScript = document.createElement('script');
+  seoScript.src = 'js/seo.js';
+  seoScript.dataset.bakecalcSeo = 'true';
+  document.head.appendChild(seoScript);
+}
+
 /* Yandex.Metrika */
 (function (m, e, t, r, i, k, a) {
   m[i] = m[i] || function () { (m[i].a = m[i].a || []).push(arguments); };

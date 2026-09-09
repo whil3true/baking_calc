@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://whil3true.github.io/baking_calc/sitemap.xml

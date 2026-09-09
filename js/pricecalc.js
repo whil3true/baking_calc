@@ -45,6 +45,22 @@
     }
   }
 
+  function readBakeCalcTransfer() {
+    const params = new URLSearchParams(window.location.search);
+    if (params.get('source') !== 'bakecalc') return null;
+
+    const transferred = {};
+    for (const key of ['ingredientsCost', 'packagingCost', 'extraCost']) {
+      const raw = params.get(key);
+      const value = PriceCalc.parseNumber(raw ?? '');
+      if (Number.isFinite(value) && value >= 0) transferred[key] = String(value);
+    }
+    if (!('ingredientsCost' in transferred) || !('extraCost' in transferred)) return null;
+
+    const recipe = (params.get('recipe') || '').trim().slice(0, 120);
+    return { settings: transferred, recipe };
+  }
+
   function clearErrors() {
     errors.replaceChildren();
     errors.hidden = true;
@@ -185,6 +201,19 @@
   } catch {
     status.textContent = 'Сохранённые параметры повреждены. Использованы начальные значения.';
   }
-  applySettings(settings);
+
+  const transfer = readBakeCalcTransfer();
+  if (transfer) {
+    settings = { ...settings, ...transfer.settings };
+    applySettings(settings);
+    saveSettings();
+    status.textContent = transfer.recipe
+      ? `Себестоимость «${transfer.recipe}» перенесена из BakeCalc. Добавьте работу, комиссию и цель.`
+      : 'Себестоимость перенесена из BakeCalc. Добавьте работу, комиссию и цель.';
+    history.replaceState(null, '', window.location.pathname);
+  } else {
+    applySettings(settings);
+  }
+
   window.lucide?.createIcons();
 })();
