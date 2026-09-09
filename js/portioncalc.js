@@ -2,7 +2,7 @@
 (() => {
   'use strict';
 
-  const STORAGE_KEY = 'portioncalc_state_v1';
+  const STORAGE_KEY = 'portioncalc_state_v2';
   const form = document.getElementById('portionForm');
   const results = document.getElementById('portionResults');
   const errors = document.getElementById('portionErrors');
@@ -22,9 +22,15 @@
     const settings = {};
     for (const key of Object.keys(PortionCalc.defaults)) {
       const input = field(key);
-      // Be tolerant of a briefly mismatched cached HTML/JS pair after deploy.
-      if (input && 'value' in input) settings[key] = input.value;
-      else settings[key] = PortionCalc.defaults[key];
+      if (!input) {
+        settings[key] = PortionCalc.defaults[key];
+      } else if (input instanceof RadioNodeList) {
+        settings[key] = input.value || PortionCalc.defaults[key];
+      } else if ('value' in input) {
+        settings[key] = input.value;
+      } else {
+        settings[key] = PortionCalc.defaults[key];
+      }
     }
     return settings;
   }
@@ -32,28 +38,36 @@
   function applySettings(settings) {
     for (const [key, value] of Object.entries(settings)) {
       const input = field(key);
-      if (input && 'value' in input) input.value = value;
+      if (!input) continue;
+      if (input instanceof RadioNodeList) {
+        const option = Array.from(input).find(item => item.value === value);
+        if (option) option.checked = true;
+      } else if ('value' in input) {
+        input.value = value;
+      }
     }
     syncFields();
   }
 
-  function setHiddenDisabled(id, disabled) {
-    const element = document.getElementById(id);
-    if (!element) return;
-    element.disabled = disabled;
-    element.hidden = disabled;
-  }
-
   function syncFields() {
     const settings = readSettings();
-    const custom = settings.portionPreset === 'custom';
-    const rectangular = settings.shape === 'rect';
-    setHiddenDisabled('customPortionFields', !custom);
-    setHiddenDisabled('rectRatioField', !rectangular);
-    const roundPreview = document.getElementById('roundCutPreview');
-    const rectPreview = document.getElementById('rectCutPreview');
-    if (roundPreview) roundPreview.hidden = rectangular;
-    if (rectPreview) rectPreview.hidden = !rectangular;
+    const round = settings.shape === 'circle';
+    document.getElementById('roundShapeCard')?.classList.toggle('portion-shape-active', round);
+    document.getElementById('rectShapeCard')?.classList.toggle('portion-shape-active', !round);
+    const previewTitle = document.getElementById('portionPieceTitle');
+    const previewText = document.getElementById('portionPieceText');
+    const roundPiece = document.getElementById('roundPiecePreview');
+    const rectPiece = document.getElementById('rectPiecePreview');
+    if (previewTitle) previewTitle.textContent = round ? 'Клиновидный кусочек' : 'Прямоугольный кусочек';
+    if (previewText) previewText.textContent = round
+      ? 'Укажите длину клина от центра к краю и его ширину по внешнему краю.'
+      : 'Укажите длину и ширину одного прямоугольного кусочка.';
+    if (roundPiece) roundPiece.hidden = !round;
+    if (rectPiece) rectPiece.hidden = round;
+    const lengthLabel = document.getElementById('portionLengthLabel');
+    const widthLabel = document.getElementById('portionWidthLabel');
+    if (lengthLabel) lengthLabel.textContent = round ? 'Длина клина, см' : 'Длина кусочка, см';
+    if (widthLabel) widthLabel.textContent = round ? 'Ширина клина, см' : 'Ширина кусочка, см';
   }
 
   function saveSettings() {
@@ -118,19 +132,19 @@
     if (element) element.textContent = text;
   }
 
-  function renderResult(calculation, settings) {
+  function renderResult(calculation) {
     const r = calculation.result;
-    lastCalculation = { result: r, settings };
+    lastCalculation = r;
     setText('portionRecommendedSize', sizeText(r));
     setText('portionTarget', `${r.targetPortions} порц.`);
     setText('portionCapacity', `${r.capacity} порц.`);
     setText('portionExtra', `${r.extraPortions} порц.`);
-    setText('portionSlice', `${number(r.portionWidth)} × ${number(r.portionLength)} см ≈ ${number(r.portionArea)} см²`);
+    setText('portionSlice', `${number(r.portionLength)} × ${number(r.portionWidth)} см`);
     setText('portionCut', cutText(r));
     setText('portionArea', `${number(r.requiredArea)} см²`);
-    setText('portionSummary', `Гостей: ${r.guests} · запас: ${number(r.reserve)}% · порция: ${r.portionLabel.toLowerCase()} · нарезка: ${cutText(r).toLowerCase()}`);
+    setText('portionSummary', `Гостей: ${r.guests} · запас: ${number(r.reserve)}% · нарезка: ${cutText(r).toLowerCase()}`);
     results.hidden = false;
-    status.textContent = 'Расчёт готов. Размер автоматически округлён вверх до целого сантиметра.';
+    status.textContent = 'Расчёт готов. Размер торта подобран автоматически.';
     results.focus({ preventScroll: true });
     results.scrollIntoView({ behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block: 'start' });
   }
@@ -141,7 +155,7 @@
     const settings = readSettings();
     const calculation = PortionCalc.calculate(settings);
     if (!calculation.ok) return showErrors(calculation.errors);
-    renderResult(calculation, settings);
+    renderResult(calculation);
     saveSettings();
   });
 
@@ -158,21 +172,19 @@
     saveSettings();
   });
 
-  const copyButton = document.getElementById('copyPortion');
-  copyButton?.addEventListener('click', async () => {
+  document.getElementById('copyPortion')?.addEventListener('click', async () => {
     if (!lastCalculation) return;
-    const r = lastCalculation.result;
+    const r = lastCalculation;
     const text = [
       'BakeCalc — расчёт размера торта по порциям',
+      `Форма: ${r.shape === 'circle' ? 'круглая' : 'прямоугольная'}`,
+      `Кусочек: ${number(r.portionLength)} × ${number(r.portionWidth)} см`,
+      `Нарезка: ${cutText(r).toLowerCase()}`,
       `Гостей: ${r.guests}`,
       `Запас: ${number(r.reserve)}%`,
-      `Ориентир площади порции: ${number(r.portionWidth)} × ${number(r.portionLength)} см = ${number(r.portionArea)} см²`,
-      `Рекомендуемая нарезка: ${cutText(r).toLowerCase()}`,
       `Нужно заложить: ${r.targetPortions} порций`,
-      `Рекомендуемый размер: ${sizeText(r)}`,
-      `Расчётная вместимость: ${r.capacity} порций`,
-      '',
-      'Для круглого торта предполагается клиновидная нарезка, для прямоугольного — нарезка сеткой.'
+      `Рекомендуемый размер торта: ${sizeText(r)}`,
+      `Расчётная вместимость: ${r.capacity} порций`
     ].join('\n');
     try {
       if (!navigator.clipboard || !window.isSecureContext) throw new Error('Clipboard unavailable');
