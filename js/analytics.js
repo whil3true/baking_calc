@@ -22,6 +22,15 @@ ym(112356971, 'init', {
   trackLinks: true
 });
 
+/* Icons are decoration, not a prerequisite for calculations or navigation. */
+window.lucide = window.lucide || { createIcons() {} };
+
+/* Planned tools are status cards, not links to the top of the page. */
+document.querySelectorAll('a.tool-tile-soon').forEach(card => {
+  card.removeAttribute('href');
+  card.setAttribute('aria-disabled', 'true');
+});
+
 /* The legacy BakeCalc page keeps its UI in app.js. Load its pure math and
    reliability layer only on that page. The hardening layer is safe whether
    DOMContentLoaded has already fired or not. */
