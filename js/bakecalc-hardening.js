@@ -48,15 +48,52 @@
     return costDetails().total;
   };
 
+  function ensurePriceCalcLink() {
+    let link = document.getElementById('openPriceCalc');
+    if (link) return link;
+    const costSection = document.getElementById('resultCostSection');
+    if (!costSection) return null;
+    link = document.createElement('a');
+    link.id = 'openPriceCalc';
+    link.className = 'btn-ghost w-full mt-3 py-3 rounded-xl font-semibold flex items-center justify-center gap-2';
+    link.textContent = 'Рассчитать цену продажи';
+    link.hidden = true;
+    costSection.insertAdjacentElement('afterend', link);
+    return link;
+  }
+
+  function updatePriceCalcLink(details) {
+    const link = ensurePriceCalcLink();
+    if (!link || !state.result) return;
+    const anyPricing = state.ingredients.some(ing => Number(ing.price) > 0) || calculateExtraCostsTotal() > 0;
+    const available = anyPricing && details.complete;
+    link.hidden = !available;
+    if (!available) {
+      link.removeAttribute('href');
+      return;
+    }
+
+    const params = new URLSearchParams({
+      source: 'bakecalc',
+      ingredientsCost: details.total.toFixed(2),
+      packagingCost: '0',
+      extraCost: calculateExtraCostsTotal().toFixed(2)
+    });
+    if (typeof state.recipeName === 'string' && state.recipeName.trim()) params.set('recipe', state.recipeName.trim());
+    link.href = `pricecalc.html?${params.toString()}`;
+  }
+
   const originalRenderResults = renderResults;
   renderResults = function () {
     originalRenderResults();
     const warning = document.getElementById('resultCostWarning');
-    if (!warning || !state.result) return;
-    const details = costDetails();
-    const anyPricing = state.ingredients.some(ing => Number(ing.price) > 0) || calculateExtraCostsTotal() > 0;
-    warning.hidden = !anyPricing || details.complete;
-    warning.textContent = details.complete ? '' : `Себестоимость неполная: ${details.issues.join('; ')}.`;
+    const details = state.result ? costDetails() : { complete: false, issues: [] };
+    if (warning && state.result) {
+      const anyPricing = state.ingredients.some(ing => Number(ing.price) > 0) || calculateExtraCostsTotal() > 0;
+      warning.hidden = !anyPricing || details.complete;
+      warning.textContent = details.complete ? '' : `Себестоимость неполная: ${details.issues.join('; ')}.`;
+    }
+    updatePriceCalcLink(details);
   };
 
   calculateRecipe = function () {
@@ -117,6 +154,7 @@
       warning.hidden = true;
       costBox.appendChild(warning);
     }
+    ensurePriceCalcLink();
     loadState();
     renderAll();
     window.lucide?.createIcons();
