@@ -9,7 +9,7 @@ REVIEW = ROOT / 'docs' / 'repository-review.md'
 
 
 def replace_function(text, name, next_name, replacement):
-    pattern = rf'^function {re.escape(name)}\([^\n]*\) \{{.*?^\}}\n\n(?=function {re.escape(next_name)}\()'
+    pattern = rf'^function {re.escape(name)}\([^\n]*\) \{{.*?^\}}\n+(?=function {re.escape(next_name)}\()'
     text, count = re.subn(pattern, replacement.rstrip() + '\n\n', text, count=1, flags=re.M | re.S)
     if count != 1:
         raise RuntimeError(f'Could not replace function {name}')
