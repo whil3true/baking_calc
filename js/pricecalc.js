@@ -175,7 +175,7 @@
     if (!lastCalculation) return;
     const r = lastCalculation.result;
     const lines = [
-      'BakeCalc — цена продажи',
+      'KonditerCalc — цена продажи',
       `Базовая себестоимость: ${money(r.baseCost)}`,
       `Работа: ${money(r.laborCost)}`,
       `Комиссия: ${money(r.commissionAmount)} (${number(r.commissionPercent)}%)`,
@@ -208,8 +208,8 @@
     applySettings(settings);
     saveSettings();
     status.textContent = transfer.recipe
-      ? `Себестоимость «${transfer.recipe}» перенесена из BakeCalc. Добавьте работу, комиссию и цель.`
-      : 'Себестоимость перенесена из BakeCalc. Добавьте работу, комиссию и цель.';
+      ? `Себестоимость «${transfer.recipe}» перенесена из KonditerCalc. Добавьте работу, комиссию и цель.`
+      : 'Себестоимость перенесена из KonditerCalc. Добавьте работу, комиссию и цель.';
     history.replaceState(null, '', window.location.pathname);
   } else {
     applySettings(settings);

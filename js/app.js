@@ -194,16 +194,13 @@ function renderAllExtraCosts() {
 function renderResults() {
   const costDetails = state.result ? calculateIngredientsCostDetails() : { total: 0, complete: false, issues: [] };
   const extraCostsTotal = calculateExtraCostsTotal();
-  const anyPricing = state.ingredients.some(ingredient => Number(ingredient.price) > 0) || extraCostsTotal > 0;
   BakeCalcView.renderResults({
     state,
     totalWeight: calculateTotalWeight(),
     ingredientsCost: costDetails.total,
     extraCostsTotal,
-    costComplete: costDetails.complete,
-    costIssues: costDetails.issues,
-    anyPricing,
-    priceCalcUrl: buildPriceCalcUrl(costDetails)
+    costDetails,
+    priceCalcHref: buildPriceCalcUrl(costDetails)
   });
 }
 

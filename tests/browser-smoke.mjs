@@ -38,7 +38,7 @@ async function runBakeCalcDelegatedEvents() {
   const pageErrors = [];
   page.on('pageerror', error => pageErrors.push(error.message));
   try {
-    await page.goto(`${baseURL}/bakecalc.html`, { waitUntil: 'domcontentloaded' });
+    await page.goto(`${baseURL}/pereschet-recepta/`, { waitUntil: 'domcontentloaded' });
 
     await page.getByRole('button', { name: 'Добавить ингредиент' }).click();
     const ingredientRow = page.locator('#ingredientsBody tr').last();
@@ -66,7 +66,7 @@ async function runBakeCalcPriceCalcIntegration() {
   const pageErrors = [];
   page.on('pageerror', error => pageErrors.push(error.message));
   try {
-    await page.goto(`${baseURL}/bakecalc.html`, { waitUntil: 'domcontentloaded' });
+    await page.goto(`${baseURL}/pereschet-recepta/`, { waitUntil: 'domcontentloaded' });
     await page.getByRole('button', { name: 'Загрузить тестовый рецепт' }).click();
     await page.getByRole('button', { name: 'Рассчитать новый рецепт' }).click();
 
@@ -89,7 +89,7 @@ async function runBakeCalcPriceCalcIntegration() {
     assert.ok(ingredientsCost > 0, 'BakeCalc → PriceCalc: ingredient cost was not transferred');
     assert.ok(extraCost > 0, 'BakeCalc → PriceCalc: extra cost was not transferred');
     assert.ok(packagingCost > 0, 'BakeCalc → PriceCalc: packaging cost was not transferred');
-    assert.match(await page.locator('#priceStatus').textContent() || '', /перенесена из BakeCalc/i);
+    assert.match(await page.locator('#priceStatus').textContent() || '', /перенесена из KonditerCalc/i);
     assert.equal(new URL(page.url()).search, '', 'BakeCalc → PriceCalc: transfer query should be cleaned after import');
     assert.deepEqual(pageErrors, [], `BakeCalc → PriceCalc: browser JavaScript errors: ${pageErrors.join(' | ')}`);
     console.log(`✓ BakeCalc → PriceCalc: ingredients ${ingredientsCost} ₽, packaging ${packagingCost} ₽, extras ${extraCost} ₽`);

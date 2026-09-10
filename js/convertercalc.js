@@ -161,7 +161,7 @@
     if (!lastCalculation) return;
     const r = lastCalculation.result;
     const text = [
-      'BakeCalc — конвертер ингредиентов',
+      'KonditerCalc — конвертер ингредиентов',
       `Исходное значение: ${number(r.amount)} ${r.fromLabel}`,
       `Результат: ${number(r.converted)} ${r.toLabel}`,
       r.densityNeeded ? `Плотность: ${number(r.density)} г/мл` : 'Плотность не требуется'

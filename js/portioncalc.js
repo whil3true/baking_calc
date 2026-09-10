@@ -176,7 +176,7 @@
     if (!lastCalculation) return;
     const r = lastCalculation;
     const text = [
-      'BakeCalc — расчёт размера торта по порциям',
+      'KonditerCalc — расчёт размера торта по порциям',
       `Форма: ${r.shape === 'circle' ? 'круглая' : 'прямоугольная'}`,
       `Кусочек: ${number(r.portionLength)} × ${number(r.portionWidth)} см`,
       `Нарезка: ${cutText(r).toLowerCase()}`,
