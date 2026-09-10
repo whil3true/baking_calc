@@ -9,12 +9,12 @@ const read = file => fs.readFileSync(path.join(root, file), 'utf8');
 test('BakeCalc runtime dependencies are explicit and ordered in HTML', () => {
   const html = read('pereschet-recepta/index.html');
   const scripts = [
-    'js/bakecalc-math.js',
-    'js/bakecalc-state.js',
-    'js/bakecalc-view.js',
-    'js/bakecalc-events.js',
-    'js/app.js',
-    'js/analytics.js'
+    '/js/bakecalc-math.js',
+    '/js/bakecalc-state.js',
+    '/js/bakecalc-view.js',
+    '/js/bakecalc-events.js',
+    '/js/app.js',
+    '/js/analytics.js'
   ];
   let previous = -1;
   for (const script of scripts) {
