@@ -3,19 +3,19 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Пересчёт рецепта под другую форму онлайн | KonditerCalc</title>
-<meta name="description" content="Пересчитайте рецепт под круглую или прямоугольную форму, учтите высоту и рассчитайте себестоимость ингредиентов онлайн.">
+<title>Калькулятор пересчёта рецепта под другую форму | KonditerCalc</title>
+<meta name="description" content="Пересчитайте рецепт под другой диаметр или размер формы. Калькулятор рассчитает коэффициент, новые количества ингредиентов и себестоимость.">
 <link rel="canonical" href="https://konditercalc.ru/pereschet-recepta/">
 <meta property="og:locale" content="ru_RU">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="KonditerCalc">
-<meta property="og:title" content="Пересчёт рецепта под другую форму онлайн | KonditerCalc">
-<meta property="og:description" content="Пересчитайте рецепт под круглую или прямоугольную форму, учтите высоту и рассчитайте себестоимость ингредиентов онлайн.">
+<meta property="og:title" content="Калькулятор пересчёта рецепта под другую форму | KonditerCalc">
+<meta property="og:description" content="Пересчитайте рецепт под другой диаметр или размер формы. Калькулятор рассчитает коэффициент, новые количества ингредиентов и себестоимость.">
 <meta property="og:url" content="https://konditercalc.ru/pereschet-recepta/">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Пересчёт рецепта под другую форму онлайн | KonditerCalc">
-<meta name="twitter:description" content="Пересчитайте рецепт под круглую или прямоугольную форму, учтите высоту и рассчитайте себестоимость ингредиентов онлайн.">
-<script id="konditercalc-structured-data" type="application/ld+json">{"@context":"https://schema.org","@type":"SoftwareApplication","name":"Пересчёт рецепта под другую форму","url":"https://konditercalc.ru/pereschet-recepta/","description":"Пересчитайте рецепт под круглую или прямоугольную форму, учтите высоту и рассчитайте себестоимость ингредиентов онлайн.","applicationCategory":"UtilityApplication","operatingSystem":"Any","inLanguage":"ru","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"RUB"}}</script>
+<meta name="twitter:title" content="Калькулятор пересчёта рецепта под другую форму | KonditerCalc">
+<meta name="twitter:description" content="Пересчитайте рецепт под другой диаметр или размер формы. Калькулятор рассчитает коэффициент, новые количества ингредиентов и себестоимость.">
+<script id="konditercalc-structured-data" type="application/ld+json">{"@context":"https://schema.org","@type":"SoftwareApplication","name":"Пересчёт рецепта под другую форму","url":"https://konditercalc.ru/pereschet-recepta/","description":"Пересчитайте рецепт под другой диаметр или размер формы. Калькулятор рассчитает коэффициент, новые количества ингредиентов и себестоимость.","applicationCategory":"UtilityApplication","operatingSystem":"Any","inLanguage":"ru","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"RUB"}}</script>
 
 <link rel="stylesheet" href="/css/styles.css">
 <link rel="stylesheet" href="/css/utilities.css">
@@ -33,6 +33,22 @@
 <button type="button" data-action="calculate" class="w-full btn-primary py-5 rounded-2xl font-bold text-lg flex items-center justify-center gap-3 shadow-md hover:shadow-lg transition-all"><i data-lucide="calculator" class="w-6 h-6"></i>Рассчитать новый рецепт</button>
 <section id="resultsSection" class="hidden"><div class="card p-5 md:p-6 slide-up"><div class="flex items-start gap-3 mb-5"><div class="step-number bg-gradient-to-br from-caramel to-terracotta">✓</div><div class="flex-1 min-w-0"><h2 class="text-lg font-semibold mb-1">Ваш пересчитанный рецепт</h2><p class="text-sm text-dark/60">Готово! Вот новые пропорции для вашей формы</p></div></div><div class="mb-5"><div id="resultCoefficientBadge" class="bg-caramel/10 text-caramel px-4 py-3 rounded-2xl font-semibold text-sm inline-flex items-center gap-2"><i data-lucide="calculator" class="w-4 h-4"></i><span>Коэффициент: ×1.00 (порция увеличена на 0%)</span></div></div><div class="overflow-x-auto scrollbar-hide -mx-5 md:-mx-6 px-5 md:px-6 mb-4"><table class="result-table w-full text-left"><thead><tr><th class="rounded-tl-xl">Ингредиент</th><th class="text-right rounded-tr-xl">Новое количество</th></tr></thead><tbody id="resultsBody"></tbody></table></div><label class="flex items-center gap-3 cursor-pointer select-none group mb-4"><input type="checkbox" id="roundResultsCheckbox" data-action="round-results" class="w-5 h-5 checkbox-caramel rounded"><span class="text-sm font-medium">Округлять до целых чисел</span></label><div class="grid grid-cols-2 gap-3 mb-4"><div class="bg-soft/40 rounded-xl p-3"><div class="text-xs text-dark/50 mb-1">Позиций</div><div class="text-lg font-bold" id="resultItemsCount">0</div></div><div class="bg-soft/40 rounded-xl p-3"><div class="text-xs text-dark/50 mb-1">Вес ингредиентов (г)</div><div class="text-lg font-bold text-caramel" id="resultTotalWeight">0 г</div></div></div><div id="resultCostSection" class="hidden mb-4"><div class="bg-soft/40 rounded-xl p-4 space-y-2"><div class="flex items-center gap-2 mb-3"><i data-lucide="wallet" class="w-5 h-5 text-caramel"></i><span class="font-semibold">Себестоимость</span></div><div class="flex items-center justify-between text-sm"><span class="text-dark/70">Ингредиенты</span><span class="font-medium" id="resultIngredientsCost">0.00 ₽</span></div><div class="flex items-center justify-between text-sm"><span class="text-dark/70">Доп. расходы</span><span class="font-medium" id="resultExtraCostsTotal">0.00 ₽</span></div><div class="border-t border-dark/10 pt-2 flex items-center justify-between"><span class="font-semibold">ИТОГО</span><span class="text-xl font-bold text-caramel" id="resultTotalCost">0.00 ₽</span></div></div></div><div class="flex flex-col sm:flex-row gap-3 pt-4 border-t border-soft"><button type="button" data-action="copy-recipe" class="flex-1 btn-primary py-3 rounded-xl font-semibold flex items-center justify-center gap-2"><i data-lucide="copy" class="w-5 h-5"></i>Скопировать рецепт</button><button type="button" data-action="recalculate" class="flex-1 btn-ghost py-3 rounded-xl font-semibold flex items-center justify-center gap-2"><i data-lucide="refresh-cw" class="w-5 h-5"></i>Пересчитать заново</button></div></div></section>
 <div id="yandex_rtb_2" class="w-full flex justify-center my-0"></div>
+  <section class="card p-5 md:p-6 text-sm" aria-labelledby="recipe-guide-title">
+  <h2 id="recipe-guide-title" class="text-xl md:text-2xl font-bold mb-3">Как пересчитать рецепт под другой диаметр или форму</h2>
+  <div class="space-y-3 text-dark/70 leading-relaxed">
+    <p>Калькулятор сначала сравнивает площадь исходной и новой формы, получает коэффициент и умножает на него количество каждого ингредиента. Для круглых форм коэффициент по площади равен отношению квадратов диаметров: <strong>(новый диаметр / исходный диаметр)²</strong>. Для прямоугольных форм сравниваются длина × ширина.</p>
+    <p>Если важен не только размер основания, но и высота изделия, включите высоту для обеих форм. Тогда коэффициент дополнительно умножается на отношение новой и исходной высоты.</p>
+    <h3 class="font-semibold text-dark">Пример: форма 20 см → 24 см</h3>
+    <p>Для двух круглых форм одинаковой высоты коэффициент равен (24 / 20)² = <strong>1,44</strong>. Значит, 200 г муки превращаются в 288 г, а 100 г сахара — в 144 г.</p>
+  </div>
+  <div class="mt-5 space-y-3">
+    <h3 class="font-semibold">Частые вопросы</h3>
+    <details><summary class="font-medium cursor-pointer">Можно пересчитать круглую форму в прямоугольную?</summary><p class="mt-2 text-dark/70 leading-relaxed">Да. Калькулятор сравнивает площади разных форм, поэтому исходная и новая форма не обязаны быть одного типа.</p></details>
+    <details><summary class="font-medium cursor-pointer">Когда нужно учитывать высоту?</summary><p class="mt-2 text-dark/70 leading-relaxed">Когда вы хотите сохранить близкий объём изделия и высота исходной и новой формы действительно различается. Высоту нужно включить сразу для обеих форм.</p></details>
+    <details><summary class="font-medium cursor-pointer">Как считается себестоимость после пересчёта?</summary><p class="mt-2 text-dark/70 leading-relaxed">Для ингредиента используется цена упаковки, её размер и новое количество. Если хотя бы для одного используемого ингредиента не хватает цены или размера упаковки, калькулятор помечает себестоимость как неполную.</p></details>
+  </div>
+  <p class="mt-5 text-dark/70">После пересчёта можно отдельно <a class="home-link" href="/raschet-krema-dlya-torta/">рассчитать крем для торта</a> или передать полную себестоимость в <a class="home-link" href="/raschet-ceny-torta/">калькулятор цены торта</a>.</p>
+</section>
 <footer class="text-center py-3"><a href="/" class="home-link"><span aria-hidden="true">←</span> На главную</a></footer>
 </main>
 <script src="/js/bakecalc-math.js"></script>

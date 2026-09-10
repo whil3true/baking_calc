@@ -3,19 +3,19 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Конвертер ингредиентов: граммы, мл, кг и литры | KonditerCalc</title>
-<meta name="description" content="Переводите граммы, килограммы, миллилитры и литры. Для перевода массы в объём используйте плотность ингредиента.">
+<title>Граммы в миллилитры: конвертер ингредиентов | KonditerCalc</title>
+<meta name="description" content="Переводите граммы в миллилитры и обратно по плотности ингредиента, а также конвертируйте граммы, килограммы, миллилитры и литры.">
 <link rel="canonical" href="https://konditercalc.ru/konverter-ingredientov/">
 <meta property="og:locale" content="ru_RU">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="KonditerCalc">
-<meta property="og:title" content="Конвертер ингредиентов: граммы, мл, кг и литры | KonditerCalc">
-<meta property="og:description" content="Переводите граммы, килограммы, миллилитры и литры. Для перевода массы в объём используйте плотность ингредиента.">
+<meta property="og:title" content="Граммы в миллилитры: конвертер ингредиентов | KonditerCalc">
+<meta property="og:description" content="Переводите граммы в миллилитры и обратно по плотности ингредиента, а также конвертируйте граммы, килограммы, миллилитры и литры.">
 <meta property="og:url" content="https://konditercalc.ru/konverter-ingredientov/">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Конвертер ингредиентов: граммы, мл, кг и литры | KonditerCalc">
-<meta name="twitter:description" content="Переводите граммы, килограммы, миллилитры и литры. Для перевода массы в объём используйте плотность ингредиента.">
-<script id="konditercalc-structured-data" type="application/ld+json">{"@context":"https://schema.org","@type":"SoftwareApplication","name":"Конвертер ингредиентов","url":"https://konditercalc.ru/konverter-ingredientov/","description":"Переводите граммы, килограммы, миллилитры и литры. Для перевода массы в объём используйте плотность ингредиента.","applicationCategory":"UtilityApplication","operatingSystem":"Any","inLanguage":"ru","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"RUB"}}</script>
+<meta name="twitter:title" content="Граммы в миллилитры: конвертер ингредиентов | KonditerCalc">
+<meta name="twitter:description" content="Переводите граммы в миллилитры и обратно по плотности ингредиента, а также конвертируйте граммы, килограммы, миллилитры и литры.">
+<script id="konditercalc-structured-data" type="application/ld+json">{"@context":"https://schema.org","@type":"SoftwareApplication","name":"Конвертер ингредиентов","url":"https://konditercalc.ru/konverter-ingredientov/","description":"Переводите граммы в миллилитры и обратно по плотности ингредиента, а также конвертируйте граммы, килограммы, миллилитры и литры.","applicationCategory":"UtilityApplication","operatingSystem":"Any","inLanguage":"ru","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"RUB"}}</script>
 
 <link rel="stylesheet" href="/css/styles.css">
 <link rel="stylesheet" href="/css/utilities.css">
@@ -82,7 +82,23 @@
     <button id="copyConverter" type="button" class="btn-primary w-full rounded-xl py-3 font-semibold mt-5">Скопировать результат</button>
   </section>
 
-  <details class="card p-5 md:p-6 text-sm">
+    <section class="card p-5 md:p-6 text-sm" aria-labelledby="converter-guide-title">
+  <h2 id="converter-guide-title" class="text-xl md:text-2xl font-bold mb-3">Как перевести граммы в миллилитры и обратно</h2>
+  <div class="space-y-3 text-dark/70 leading-relaxed">
+    <p>Граммы измеряют массу, а миллилитры — объём, поэтому между ними нет одного универсального коэффициента. Для перевода нужна плотность конкретного ингредиента в г/мл.</p>
+    <p>Формулы простые: <strong>миллилитры = граммы / плотность</strong>, а <strong>граммы = миллилитры × плотность</strong>. Перевод внутри одной величины, например граммы ↔ килограммы или миллилитры ↔ литры, плотности не требует.</p>
+    <h3 class="font-semibold text-dark">Пример: 100 г продукта плотностью 0,8 г/мл</h3>
+    <p>100 / 0,8 = <strong>125 мл</strong>. Поэтому автоматически считать, что 100 г любого продукта равны 100 мл, нельзя.</p>
+  </div>
+  <div class="mt-5 space-y-3">
+    <h3 class="font-semibold">Частые вопросы</h3>
+    <details><summary class="font-medium cursor-pointer">Когда 1 грамм равен 1 миллилитру?</summary><p class="mt-2 text-dark/70 leading-relaxed">Только при плотности 1 г/мл. Для ингредиентов с другой плотностью масса и объём численно различаются.</p></details>
+    <details><summary class="font-medium cursor-pointer">Нужна ли плотность для перевода кг в граммы?</summary><p class="mt-2 text-dark/70 leading-relaxed">Нет. Это обе единицы массы: 1 кг = 1000 г. Аналогично 1 л = 1000 мл для единиц объёма.</p></details>
+    <details><summary class="font-medium cursor-pointer">Где взять плотность ингредиента?</summary><p class="mt-2 text-dark/70 leading-relaxed">Из надёжной технологической таблицы, документации производителя или измерить самостоятельно: массу известного объёма разделить на этот объём.</p></details>
+  </div>
+  <p class="mt-5 text-dark/70">Если задача связана с изменением количества всех ингредиентов рецепта, удобнее использовать <a class="home-link" href="/pereschet-recepta/">калькулятор пересчёта рецепта</a>.</p>
+</section>
+<details class="card p-5 md:p-6 text-sm">
     <summary class="font-semibold cursor-pointer">Как работает перевод?</summary>
     <div class="mt-3 space-y-3 text-dark/70 leading-relaxed">
       <p>Граммы и килограммы переводятся друг в друга напрямую. То же относится к миллилитрам и литрам.</p>
