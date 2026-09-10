@@ -3,19 +3,19 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Размер торта по количеству гостей | KonditerCalc</title>
-<meta name="description" content="Рассчитайте размер круглого или прямоугольного торта по количеству гостей, размеру порции и запасу.">
+<title>Калькулятор размера торта по количеству гостей | KonditerCalc</title>
+<meta name="description" content="Подберите размер круглого или прямоугольного торта по количеству гостей, размеру одного кусочка и запасу порций.">
 <link rel="canonical" href="https://konditercalc.ru/razmer-torta-po-gostyam/">
 <meta property="og:locale" content="ru_RU">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="KonditerCalc">
-<meta property="og:title" content="Размер торта по количеству гостей | KonditerCalc">
-<meta property="og:description" content="Рассчитайте размер круглого или прямоугольного торта по количеству гостей, размеру порции и запасу.">
+<meta property="og:title" content="Калькулятор размера торта по количеству гостей | KonditerCalc">
+<meta property="og:description" content="Подберите размер круглого или прямоугольного торта по количеству гостей, размеру одного кусочка и запасу порций.">
 <meta property="og:url" content="https://konditercalc.ru/razmer-torta-po-gostyam/">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Размер торта по количеству гостей | KonditerCalc">
-<meta name="twitter:description" content="Рассчитайте размер круглого или прямоугольного торта по количеству гостей, размеру порции и запасу.">
-<script id="konditercalc-structured-data" type="application/ld+json">{"@context":"https://schema.org","@type":"SoftwareApplication","name":"Размер торта по количеству гостей","url":"https://konditercalc.ru/razmer-torta-po-gostyam/","description":"Рассчитайте размер круглого или прямоугольного торта по количеству гостей, размеру порции и запасу.","applicationCategory":"UtilityApplication","operatingSystem":"Any","inLanguage":"ru","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"RUB"}}</script>
+<meta name="twitter:title" content="Калькулятор размера торта по количеству гостей | KonditerCalc">
+<meta name="twitter:description" content="Подберите размер круглого или прямоугольного торта по количеству гостей, размеру одного кусочка и запасу порций.">
+<script id="konditercalc-structured-data" type="application/ld+json">{"@context":"https://schema.org","@type":"SoftwareApplication","name":"Размер торта по количеству гостей","url":"https://konditercalc.ru/razmer-torta-po-gostyam/","description":"Подберите размер круглого или прямоугольного торта по количеству гостей, размеру одного кусочка и запасу порций.","applicationCategory":"UtilityApplication","operatingSystem":"Any","inLanguage":"ru","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"RUB"}}</script>
 
 <link rel="stylesheet" href="/css/styles.css">
 <link rel="stylesheet" href="/css/utilities.css">
@@ -117,7 +117,23 @@
     <button id="copyPortion" type="button" class="btn-primary w-full rounded-xl py-3 font-semibold mt-5">Скопировать расчёт</button>
   </section>
 
-  <details class="card p-5 md:p-6 text-sm">
+    <section class="card p-5 md:p-6 text-sm" aria-labelledby="portion-guide-title">
+  <h2 id="portion-guide-title" class="text-xl md:text-2xl font-bold mb-3">Как подобрать размер торта на нужное количество гостей</h2>
+  <div class="space-y-3 text-dark/70 leading-relaxed">
+    <p>Калькулятор исходит из размера одного кусочка и количества порций. Для круглого торта кусочек приближён клином-треугольником, а для прямоугольного — прямоугольником. После добавления запаса суммарная площадь порций переводится в рекомендуемый размер торта.</p>
+    <p>Это геометрическая оценка по площади. Высота торта, количество ярусов и фактический способ нарезки могут изменить реальное число порций, поэтому для ответственного заказа разумно оставлять запас.</p>
+    <h3 class="font-semibold text-dark">Пример: торт на 20 человек</h3>
+    <p>При круглом торте, кусочке 10 × 5 см и запасе 10% калькулятор закладывает <strong>22 порции</strong>. По используемой модели минимальный диаметр получается около 26,5 см и округляется вверх до <strong>27 см</strong>.</p>
+  </div>
+  <div class="mt-5 space-y-3">
+    <h3 class="font-semibold">Частые вопросы</h3>
+    <details><summary class="font-medium cursor-pointer">Учитывает ли расчёт высоту торта?</summary><p class="mt-2 text-dark/70 leading-relaxed">Нет. Здесь расчёт идёт по площади порций. Для очень высоких или низких тортов фактический размер порции может отличаться.</p></details>
+    <details><summary class="font-medium cursor-pointer">Зачем нужен запас порций?</summary><p class="mt-2 text-dark/70 leading-relaxed">Он покрывает дополнительные порции и ситуацию, когда часть кусочков нарезана крупнее расчётного размера.</p></details>
+    <details><summary class="font-medium cursor-pointer">Можно рассчитать прямоугольный торт?</summary><p class="mt-2 text-dark/70 leading-relaxed">Да. Для прямоугольной формы калькулятор подбирает компактные целочисленные длину и ширину, достаточные для заданного числа порций.</p></details>
+  </div>
+  <p class="mt-5 text-dark/70">После выбора размера можно рассчитать <a class="home-link" href="/raschet-krema-dlya-torta/">необходимое количество крема</a> и затем <a class="home-link" href="/raschet-ceny-torta/">цену готового торта</a>.</p>
+</section>
+<details class="card p-5 md:p-6 text-sm">
     <summary class="font-semibold cursor-pointer">Как считается размер?</summary>
     <div class="mt-3 space-y-3 text-dark/70 leading-relaxed">
       <p>Круг: площадь одного клина ≈ длина × ширина / 2. Затем суммарная площадь порций переводится в площадь круга и диаметр округляется вверх.</p>

@@ -3,19 +3,19 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Калькулятор крема для торта онлайн | KonditerCalc</title>
-<meta name="description" content="Рассчитайте количество крема для прослоек, верха и боков круглого или прямоугольного торта с учётом запаса.">
+<title>Сколько крема нужно на торт: калькулятор | KonditerCalc</title>
+<meta name="description" content="Рассчитайте, сколько крема нужно на прослойки, верх и бока круглого или прямоугольного торта с учётом толщины, плотности и запаса.">
 <link rel="canonical" href="https://konditercalc.ru/raschet-krema-dlya-torta/">
 <meta property="og:locale" content="ru_RU">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="KonditerCalc">
-<meta property="og:title" content="Калькулятор крема для торта онлайн | KonditerCalc">
-<meta property="og:description" content="Рассчитайте количество крема для прослоек, верха и боков круглого или прямоугольного торта с учётом запаса.">
+<meta property="og:title" content="Сколько крема нужно на торт: калькулятор | KonditerCalc">
+<meta property="og:description" content="Рассчитайте, сколько крема нужно на прослойки, верх и бока круглого или прямоугольного торта с учётом толщины, плотности и запаса.">
 <meta property="og:url" content="https://konditercalc.ru/raschet-krema-dlya-torta/">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Калькулятор крема для торта онлайн | KonditerCalc">
-<meta name="twitter:description" content="Рассчитайте количество крема для прослоек, верха и боков круглого или прямоугольного торта с учётом запаса.">
-<script id="konditercalc-structured-data" type="application/ld+json">{"@context":"https://schema.org","@type":"SoftwareApplication","name":"Калькулятор крема для торта","url":"https://konditercalc.ru/raschet-krema-dlya-torta/","description":"Рассчитайте количество крема для прослоек, верха и боков круглого или прямоугольного торта с учётом запаса.","applicationCategory":"UtilityApplication","operatingSystem":"Any","inLanguage":"ru","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"RUB"}}</script>
+<meta name="twitter:title" content="Сколько крема нужно на торт: калькулятор | KonditerCalc">
+<meta name="twitter:description" content="Рассчитайте, сколько крема нужно на прослойки, верх и бока круглого или прямоугольного торта с учётом толщины, плотности и запаса.">
+<script id="konditercalc-structured-data" type="application/ld+json">{"@context":"https://schema.org","@type":"SoftwareApplication","name":"Калькулятор крема для торта","url":"https://konditercalc.ru/raschet-krema-dlya-torta/","description":"Рассчитайте, сколько крема нужно на прослойки, верх и бока круглого или прямоугольного торта с учётом толщины, плотности и запаса.","applicationCategory":"UtilityApplication","operatingSystem":"Any","inLanguage":"ru","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"RUB"}}</script>
 
 <link rel="stylesheet" href="/css/styles.css">
 <link rel="stylesheet" href="/css/utilities.css">
@@ -138,7 +138,23 @@
     <div id="creamCopyFallback" class="mt-4" hidden><label for="creamCopyText" class="cream-label">Скопируйте текст вручную</label><textarea id="creamCopyText" class="input-field w-full cream-copy-text" rows="12" readonly></textarea></div>
   </section>
 
-  <details class="card p-5 md:p-6 text-sm">
+    <section class="card p-5 md:p-6 text-sm" aria-labelledby="cream-guide-title">
+  <h2 id="cream-guide-title" class="text-xl md:text-2xl font-bold mb-3">Сколько крема нужно на торт</h2>
+  <div class="space-y-3 text-dark/70 leading-relaxed">
+    <p>Количество крема зависит не только от диаметра торта. В расчёте учитываются форма, высота, число прослоек, толщина крема между коржами, покрытие верха и боков, плотность крема и выбранный запас.</p>
+    <p>Калькулятор отдельно считает объём крема для прослоек и внешнего покрытия, переводит объём в массу через плотность, затем добавляет запас. Поэтому одинаковые по размеру торты могут требовать разное количество крема.</p>
+    <h3 class="font-semibold text-dark">Пример расчёта</h3>
+    <p>Для круглого торта диаметром 20 см и высотой 10 см, двух прослоек по 10 мм, покрытия сверху и по бокам толщиной 5 мм, плотности 1 г/мл и запаса 10% расчёт даёт примерно <strong>1240 г крема</strong> с округлением вверх.</p>
+  </div>
+  <div class="mt-5 space-y-3">
+    <h3 class="font-semibold">Частые вопросы</h3>
+    <details><summary class="font-medium cursor-pointer">Три коржа — это три прослойки?</summary><p class="mt-2 text-dark/70 leading-relaxed">Нет. Между тремя коржами обычно две прослойки. В поле нужно указывать именно количество слоёв крема между коржами.</p></details>
+    <details><summary class="font-medium cursor-pointer">Зачем указывать плотность крема?</summary><p class="mt-2 text-dark/70 leading-relaxed">Геометрия даёт объём, а для получения граммов нужен вес одного миллилитра крема. Воздушный и плотный крем одинакового объёма весят по-разному.</p></details>
+    <details><summary class="font-medium cursor-pointer">Учитывается ли декор?</summary><p class="mt-2 text-dark/70 leading-relaxed">Нет. Расчёт предназначен для ровных прослоек и покрытия. Бордюры, цветы, шапочки и крупный декор лучше считать отдельно.</p></details>
+  </div>
+  <p class="mt-5 text-dark/70">Если размер торта ещё неизвестен, сначала используйте <a class="home-link" href="/razmer-torta-po-gostyam/">калькулятор размера по количеству гостей</a>.</p>
+</section>
+<details class="card p-5 md:p-6 text-sm">
     <summary class="font-semibold cursor-pointer">Как считается количество крема?</summary>
     <div class="mt-3 space-y-3 text-dark/70 leading-relaxed">
       <p>Прослойки: площадь торта × толщина одной прослойки × количество прослоек.</p>

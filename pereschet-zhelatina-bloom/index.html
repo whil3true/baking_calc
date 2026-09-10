@@ -3,19 +3,19 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Пересчёт желатина по Bloom онлайн | KonditerCalc</title>
-<meta name="description" content="Пересчитайте количество желатина между разной силой Bloom и рассчитайте воду для гидратации.">
+<title>Калькулятор желатина Bloom: пересчёт силы | KonditerCalc</title>
+<meta name="description" content="Пересчитайте количество желатина при замене одной силы Bloom на другую и рассчитайте воду для гидратации.">
 <link rel="canonical" href="https://konditercalc.ru/pereschet-zhelatina-bloom/">
 <meta property="og:locale" content="ru_RU">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="KonditerCalc">
-<meta property="og:title" content="Пересчёт желатина по Bloom онлайн | KonditerCalc">
-<meta property="og:description" content="Пересчитайте количество желатина между разной силой Bloom и рассчитайте воду для гидратации.">
+<meta property="og:title" content="Калькулятор желатина Bloom: пересчёт силы | KonditerCalc">
+<meta property="og:description" content="Пересчитайте количество желатина при замене одной силы Bloom на другую и рассчитайте воду для гидратации.">
 <meta property="og:url" content="https://konditercalc.ru/pereschet-zhelatina-bloom/">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Пересчёт желатина по Bloom онлайн | KonditerCalc">
-<meta name="twitter:description" content="Пересчитайте количество желатина между разной силой Bloom и рассчитайте воду для гидратации.">
-<script id="konditercalc-structured-data" type="application/ld+json">{"@context":"https://schema.org","@type":"SoftwareApplication","name":"Пересчёт желатина по Bloom","url":"https://konditercalc.ru/pereschet-zhelatina-bloom/","description":"Пересчитайте количество желатина между разной силой Bloom и рассчитайте воду для гидратации.","applicationCategory":"UtilityApplication","operatingSystem":"Any","inLanguage":"ru","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"RUB"}}</script>
+<meta name="twitter:title" content="Калькулятор желатина Bloom: пересчёт силы | KonditerCalc">
+<meta name="twitter:description" content="Пересчитайте количество желатина при замене одной силы Bloom на другую и рассчитайте воду для гидратации.">
+<script id="konditercalc-structured-data" type="application/ld+json">{"@context":"https://schema.org","@type":"SoftwareApplication","name":"Пересчёт желатина по Bloom","url":"https://konditercalc.ru/pereschet-zhelatina-bloom/","description":"Пересчитайте количество желатина при замене одной силы Bloom на другую и рассчитайте воду для гидратации.","applicationCategory":"UtilityApplication","operatingSystem":"Any","inLanguage":"ru","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"RUB"}}</script>
 
 <link rel="stylesheet" href="/css/styles.css">
 <link rel="stylesheet" href="/css/utilities.css">
@@ -85,7 +85,23 @@
     <button id="copyGelatin" type="button" class="btn-primary w-full rounded-xl py-3 font-semibold mt-5">Скопировать расчёт</button>
   </section>
 
-  <details class="card p-5 md:p-6 text-sm">
+    <section class="card p-5 md:p-6 text-sm" aria-labelledby="gelatin-guide-title">
+  <h2 id="gelatin-guide-title" class="text-xl md:text-2xl font-bold mb-3">Как пересчитать желатин одной силы Bloom на другую</h2>
+  <div class="space-y-3 text-dark/70 leading-relaxed">
+    <p>Bloom показывает силу желатина. Если в рецепте указан желатин одной силы, а у вас есть другой, одинаковая масса не всегда даст тот же результат. Калькулятор использует приближённую формулу: <strong>новая масса = масса по рецепту × √(Bloom рецепта / Bloom вашего желатина)</strong>.</p>
+    <p>После пересчёта массы отдельно рассчитывается вода для гидратации по выбранному отношению воды к желатину.</p>
+    <h3 class="font-semibold text-dark">Пример: 200 Bloom → 180 Bloom</h3>
+    <p>Если рецепт требует 10 г желатина 200 Bloom, при замене на 180 Bloom получается примерно <strong>10,54 г желатина</strong>. При гидратации 1:5 понадобится около <strong>52,7 г воды</strong>.</p>
+  </div>
+  <div class="mt-5 space-y-3">
+    <h3 class="font-semibold">Частые вопросы</h3>
+    <details><summary class="font-medium cursor-pointer">Если Bloom ниже, желатина нужно больше?</summary><p class="mt-2 text-dark/70 leading-relaxed">По используемой формуле да: более слабого желатина потребуется немного больше, а более сильного — меньше.</p></details>
+    <details><summary class="font-medium cursor-pointer">Откуда взять отношение воды для гидратации?</summary><p class="mt-2 text-dark/70 leading-relaxed">Используйте значение из рецепта или рекомендации производителя вашего желатина. Калькулятор не подменяет технологию конкретного продукта.</p></details>
+    <details><summary class="font-medium cursor-pointer">Это точная универсальная замена?</summary><p class="mt-2 text-dark/70 leading-relaxed">Нет. Формула является практическим приближением. На результат также влияют тип желатина, состав десерта, температура и технология приготовления.</p></details>
+  </div>
+  <p class="mt-5 text-dark/70">Для перевода граммов и миллилитров при работе с ингредиентами используйте <a class="home-link" href="/konverter-ingredientov/">конвертер ингредиентов</a>.</p>
+</section>
+<details class="card p-5 md:p-6 text-sm">
     <summary class="font-semibold cursor-pointer">Как считается пересчёт?</summary>
     <div class="mt-3 space-y-3 text-dark/70 leading-relaxed">
       <p>Эквивалентная масса = масса из рецепта × √(Bloom рецепта / Bloom вашего желатина).</p>
