@@ -7,19 +7,19 @@ const root = path.join(__dirname, '..');
 const read = file => fs.readFileSync(path.join(root, file), 'utf8');
 
 test('BakeCalc runtime dependencies are explicit and ordered in HTML', () => {
-  const html = read('bakecalc.html');
+  const html = read('pereschet-recepta/index.html');
   const scripts = [
-    'js/bakecalc-math.js',
-    'js/bakecalc-state.js',
-    'js/bakecalc-view.js',
-    'js/bakecalc-events.js',
-    'js/app.js',
-    'js/analytics.js'
+    '/js/bakecalc-math.js',
+    '/js/bakecalc-state.js',
+    '/js/bakecalc-view.js',
+    '/js/bakecalc-events.js',
+    '/js/app.js',
+    '/js/analytics.js'
   ];
   let previous = -1;
   for (const script of scripts) {
     const index = html.indexOf(`src="${script}"`);
-    assert.ok(index >= 0, `${script} must be loaded explicitly by bakecalc.html`);
+    assert.ok(index >= 0, `${script} must be loaded explicitly by pereschet-recepta/index.html`);
     assert.ok(index > previous, `${script} must load after the previous BakeCalc runtime dependency`);
     previous = index;
   }

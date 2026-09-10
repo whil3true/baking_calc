@@ -3,104 +3,18 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="description" content="PriceCalc — расчёт цены продажи десерта с учётом себестоимости, работы, комиссии, прибыли и маржи.">
-<title>Цена продажи | BakeCalc</title>
-<link rel="stylesheet" href="css/styles.css">
-<link rel="stylesheet" href="css/utilities.css">
-<script src="js/icons.js" defer></script>
-<script src="js/pricecalc-math.js?v=1" defer></script>
-<script src="js/pricecalc.js?v=1" defer></script>
+<title>Страница переехала | KonditerCalc</title>
+<meta name="robots" content="noindex,follow">
+<link rel="canonical" href="https://konditercalc.ru/raschet-ceny-torta/">
+<meta http-equiv="refresh" content="0; url=/raschet-ceny-torta/">
+<script>
+(function () {
+  var target = '/raschet-ceny-torta/' + window.location.search + window.location.hash;
+  window.location.replace(target);
+})();
+</script>
 </head>
-<body class="min-h-screen bg-cream text-dark font-sans">
-<header class="sticky top-0 z-30 bg-cream/90 backdrop-blur-md border-b border-soft">
-  <div class="max-w-3xl mx-auto px-4 py-3">
-    <nav aria-label="Навигация инструмента" class="mb-3"><a href="index.html" class="home-link"><span aria-hidden="true">←</span> На главную</a></nav>
-    <div class="flex items-center justify-between gap-3">
-      <div class="flex items-center gap-3 min-w-0">
-        <div class="w-11 h-11 rounded-2xl bg-gradient-to-br from-caramel to-terracotta flex items-center justify-center shrink-0 shadow-sm" aria-hidden="true"><i data-lucide="badge-russian-ruble" class="w-6 h-6 text-white"></i></div>
-        <div class="min-w-0"><h1 class="text-xl md:text-2xl font-bold tracking-tight">Цена продажи</h1><p class="text-xs md:text-sm text-dark/60">Себестоимость, работа, комиссия и прибыль</p></div>
-      </div>
-      <button type="reset" form="priceForm" class="btn-ghost px-3 py-2 rounded-xl text-sm font-medium shrink-0">Сбросить</button>
-    </div>
-  </div>
-</header>
-<main class="max-w-3xl mx-auto px-4 py-5 md:py-8 space-y-5">
-  <p class="text-sm text-dark/60">Соберите реальную себестоимость заказа, добавьте стоимость своего времени и выберите, какую прибыль или маржу хотите получить.</p>
-  <noscript><p class="card p-5">Для расчёта включите JavaScript. Ссылка «На главную» работает и без него.</p></noscript>
-
-  <form id="priceForm" class="space-y-5" novalidate>
-    <section class="card p-5 md:p-6" aria-labelledby="price-costs-title">
-      <div class="flex items-start gap-3 mb-5"><span class="step-number" aria-hidden="true">1</span><div><h2 id="price-costs-title" class="text-lg font-semibold">Расходы</h2><p class="text-sm text-dark/60 mt-1">Укажите прямые затраты на заказ.</p></div></div>
-      <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
-        <label class="block"><span class="cream-label">Ингредиенты, ₽</span><input id="ingredientsCost" name="ingredientsCost" type="text" inputmode="decimal" maxlength="32" value="1000" class="input-field w-full" required></label>
-        <label class="block"><span class="cream-label">Упаковка, ₽</span><input id="packagingCost" name="packagingCost" type="text" inputmode="decimal" maxlength="32" value="150" class="input-field w-full" required></label>
-        <label class="block"><span class="cream-label">Прочие расходы, ₽</span><input id="extraCost" name="extraCost" type="text" inputmode="decimal" maxlength="32" value="100" class="input-field w-full" required></label>
-      </div>
-    </section>
-
-    <section class="card p-5 md:p-6" aria-labelledby="price-work-title">
-      <div class="flex items-start gap-3 mb-5"><span class="step-number" aria-hidden="true">2</span><div><h2 id="price-work-title" class="text-lg font-semibold">Работа</h2><p class="text-sm text-dark/60 mt-1">Стоимость труда считается как время × ставка за час.</p></div></div>
-      <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-        <label class="block"><span class="cream-label">Время работы, ч</span><input id="hours" name="hours" type="text" inputmode="decimal" maxlength="32" value="3" class="input-field w-full" required></label>
-        <label class="block"><span class="cream-label">Стоимость часа, ₽</span><input id="hourlyRate" name="hourlyRate" type="text" inputmode="decimal" maxlength="32" value="500" class="input-field w-full" required></label>
-      </div>
-    </section>
-
-    <section class="card p-5 md:p-6" aria-labelledby="price-target-title">
-      <div class="flex items-start gap-3 mb-5"><span class="step-number" aria-hidden="true">3</span><div><h2 id="price-target-title" class="text-lg font-semibold">Как считать цену</h2><p class="text-sm text-dark/60 mt-1">Можно задать желаемую маржу или конкретную прибыль.</p></div></div>
-      <label class="block mb-4"><span class="cream-label">Цель</span><select id="targetMode" name="targetMode" class="input-field w-full"><option value="margin" selected>Желаемая маржа, %</option><option value="profit">Желаемая прибыль, ₽</option></select></label>
-      <label class="block"><span id="targetValueLabel" class="cream-label">Маржа, %</span><input id="targetValue" name="targetValue" type="text" inputmode="decimal" maxlength="32" value="30" class="input-field w-full" required></label>
-      <p id="targetHint" class="text-xs text-dark/60 mt-2">Маржа = прибыль / цена продажи. Это не то же самое, что наценка.</p>
-    </section>
-
-    <section class="card p-5 md:p-6" aria-labelledby="price-commission-title">
-      <div class="flex items-start gap-3 mb-5"><span class="step-number" aria-hidden="true">4</span><div><h2 id="price-commission-title" class="text-lg font-semibold">Комиссия</h2><p class="text-sm text-dark/60 mt-1">Эквайринг, маркетплейс или другая комиссия, которая берётся с цены продажи.</p></div></div>
-      <label class="block"><span class="cream-label">Комиссия, %</span><input id="commissionPercent" name="commissionPercent" type="text" inputmode="decimal" maxlength="32" value="5" class="input-field w-full" required></label>
-    </section>
-
-    <section class="card p-5 md:p-6" aria-labelledby="price-extra-title">
-      <div class="flex items-start gap-3 mb-5"><span class="step-number" aria-hidden="true">5</span><div><h2 id="price-extra-title" class="text-lg font-semibold">Дополнительно</h2><p class="text-sm text-dark/60 mt-1">Необязательно. Нужны только для расчёта цены за кг или порцию.</p></div></div>
-      <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-        <label class="block"><span class="cream-label">Масса изделия, кг</span><input id="productWeightKg" name="productWeightKg" type="text" inputmode="decimal" maxlength="32" value="" class="input-field w-full" placeholder="например, 2,5"></label>
-        <label class="block"><span class="cream-label">Количество порций</span><input id="portions" name="portions" type="text" inputmode="numeric" maxlength="32" value="" class="input-field w-full" placeholder="например, 20"></label>
-      </div>
-    </section>
-
-    <div id="priceErrors" class="cream-errors" role="alert" tabindex="-1" hidden></div>
-    <button type="submit" class="w-full btn-primary py-4 rounded-2xl font-bold text-lg flex items-center justify-center gap-2"><i data-lucide="calculator" class="w-5 h-5" aria-hidden="true"></i>Рассчитать цену</button>
-  </form>
-
-  <p id="priceStatus" role="status" class="text-sm text-dark/60"></p>
-  <section id="priceResults" class="card p-5 md:p-6 cream-results" aria-labelledby="price-result-title" tabindex="-1" hidden>
-    <p class="text-sm text-dark/60 mb-1">Рекомендуемая цена продажи</p>
-    <h2 id="price-result-title" class="text-lg font-semibold">Цена заказа</h2>
-    <p id="priceSalePrice" class="text-4xl md:text-5xl font-bold text-caramel mt-2 mb-3"></p>
-    <p id="priceSummary" class="text-sm text-dark/60 mb-5"></p>
-    <dl class="cream-breakdown">
-      <div><dt>Базовая себестоимость</dt><dd id="priceBaseCost"></dd></div>
-      <div><dt>Стоимость работы</dt><dd id="priceLaborCost"></dd></div>
-      <div><dt>Комиссия</dt><dd id="priceCommission"></dd></div>
-      <div><dt>Прибыль</dt><dd id="priceProfit"></dd></div>
-      <div><dt>Маржа</dt><dd id="priceMargin"></dd></div>
-      <div><dt>Наценка</dt><dd id="priceMarkup"></dd></div>
-      <div id="pricePerKgRow" hidden><dt>Цена за кг</dt><dd id="pricePerKg"></dd></div>
-      <div id="pricePerPortionRow" hidden><dt>Цена за порцию</dt><dd id="pricePerPortion"></dd></div>
-    </dl>
-    <button id="copyPrice" type="button" class="btn-primary w-full rounded-xl py-3 font-semibold mt-5">Скопировать расчёт</button>
-  </section>
-
-  <details class="card p-5 md:p-6 text-sm">
-    <summary class="font-semibold cursor-pointer">Как считается цена?</summary>
-    <div class="mt-3 space-y-3 text-dark/70 leading-relaxed">
-      <p>Базовая себестоимость = ингредиенты + упаковка + прочие расходы + стоимость работы.</p>
-      <p>Если выбрана маржа, цена решается так, чтобы после комиссии оставалась указанная доля прибыли от цены продажи.</p>
-      <p>Если выбрана прибыль в рублях, калькулятор добавляет её к базовой себестоимости и учитывает комиссию сверху.</p>
-      <p>Маржа = прибыль / цена продажи. Наценка = прибыль / базовая себестоимость.</p>
-    </div>
-  </details>
-  <footer class="text-center py-3"><a href="index.html" class="home-link"><span aria-hidden="true">←</span> На главную</a></footer>
-</main>
-<script src="js/analytics.js"></script>
-<noscript><div><img src="https://mc.yandex.ru/watch/112356971" style="position:absolute; left:-9999px;" alt="" /></div></noscript>
+<body>
+<p>Страница переехала: <a href="/raschet-ceny-torta/">Калькулятор цены торта и десерта</a>.</p>
 </body>
 </html>

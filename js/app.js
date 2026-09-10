@@ -1,4 +1,6 @@
-/* BakeCalc controller. Math, state, view and events live in dedicated modules. */
+/* =========================================================
+   BakeCalc — application logic
+   ========================================================= */
 const DEFAULT_STATE = {
   recipeName: '',
   originalForm: { type: 'circle', diameter: 20, length: 20, width: 20, height: 5 },
@@ -40,14 +42,25 @@ const DEMO_RECIPE = {
 
 let state = BakeCalcState.create(DEFAULT_STATE);
 
-function validateNumber(value, fallback = 0) {
-  return BakeCalcMath.number(value, fallback);
+function validateNumber(value, defaultValue = 0) {
+  return BakeCalcMath.number(value, defaultValue);
 }
 
-function showToast(message) { BakeCalcView.showToast(message); }
-function generateId() { return Date.now() + Math.floor(Math.random() * 1000); }
-function saveState() { BakeCalcState.save(localStorage, state); }
-function loadState() { state = BakeCalcState.load(localStorage, DEFAULT_STATE, BakeCalcMath.restoreState); }
+function showToast(message) {
+  BakeCalcView.showToast(message);
+}
+
+function generateId() {
+  return Date.now() + Math.floor(Math.random() * 1000);
+}
+
+function calculateIngredientsCostDetails() {
+  return BakeCalcMath.ingredientCostDetails(state.ingredients, state.result?.coefficient);
+}
+
+function calculateIngredientsCost() {
+  return calculateIngredientsCostDetails().total;
+}
 
 function calculateExtraCostsTotal() {
   return state.extraCosts.reduce((total, cost) => total + validateNumber(cost.amount, 0), 0);
@@ -55,18 +68,13 @@ function calculateExtraCostsTotal() {
 
 function calculateTotalWeight() {
   if (!state.result) return 0;
+  const coefficient = state.result.coefficient;
   let totalGrams = 0;
   for (const ingredient of state.ingredients) {
-    if ((ingredient.unit || 'г') === 'г') totalGrams += validateNumber(ingredient.amount, 0) * state.result.coefficient;
+    if ((ingredient.unit || 'г') === 'г') totalGrams += validateNumber(ingredient.amount, 0) * coefficient;
   }
   return state.result.roundResults ? Math.round(totalGrams) : Number(totalGrams.toFixed(1));
 }
-
-function costDetails() {
-  return BakeCalcMath.ingredientCostDetails(state.ingredients, state.result?.coefficient);
-}
-
-function calculateIngredientsCost() { return costDetails().total; }
 
 function splitExtraCostsForPriceCalc() {
   let packagingCost = 0;
@@ -81,10 +89,9 @@ function splitExtraCostsForPriceCalc() {
   return { packagingCost, extraCost };
 }
 
-function priceCalcHref(details) {
-  if (!state.result || !details.complete) return '';
-  const anyPricing = state.ingredients.some(item => Number(item.price) > 0) || calculateExtraCostsTotal() > 0;
-  if (!anyPricing) return '';
+function buildPriceCalcUrl(details) {
+  const anyPricing = state.ingredients.some(ingredient => Number(ingredient.price) > 0) || calculateExtraCostsTotal() > 0;
+  if (!state.result || !anyPricing || !details.complete) return '';
   const extras = splitExtraCostsForPriceCalc();
   const params = new URLSearchParams({
     source: 'bakecalc',
@@ -92,8 +99,8 @@ function priceCalcHref(details) {
     packagingCost: extras.packagingCost.toFixed(2),
     extraCost: extras.extraCost.toFixed(2)
   });
-  if (state.recipeName.trim()) params.set('recipe', state.recipeName.trim());
-  return `pricecalc.html?${params.toString()}`;
+  if (typeof state.recipeName === 'string' && state.recipeName.trim()) params.set('recipe', state.recipeName.trim());
+  return `/raschet-ceny-torta/?${params.toString()}`;
 }
 
 function invalidateResult(message = '') {
@@ -103,21 +110,27 @@ function invalidateResult(message = '') {
   if (message) showToast(message);
 }
 
-function renderFormTabs(formKey) { BakeCalcView.renderFormTabs(formKey, state); }
-function renderFormFields(formKey) { BakeCalcView.renderFormFields(formKey, state); }
-function renderAllIngredients() { BakeCalcView.renderAllIngredients(state); }
-function renderAllExtraCosts() { BakeCalcView.renderAllExtraCosts(state, calculateExtraCostsTotal()); }
+function saveState() {
+  BakeCalcState.save(localStorage, state);
+}
 
-function renderResults() {
-  const details = state.result ? costDetails() : { total: 0, complete: false, issues: [] };
-  BakeCalcView.renderResults({
-    state,
-    totalWeight: calculateTotalWeight(),
-    ingredientsCost: details.total,
-    extraCostsTotal: calculateExtraCostsTotal(),
-    costDetails: details,
-    priceCalcHref: priceCalcHref(details)
-  });
+function loadState() {
+  state = BakeCalcState.load(localStorage, DEFAULT_STATE, BakeCalcMath.restoreState);
+}
+
+function updateTotals() {
+  const extraTotal = calculateExtraCostsTotal();
+  BakeCalcView.updateExtraCostsTotal(extraTotal);
+  if (state.result) renderResults();
+  saveState();
+}
+
+function renderFormTabs(formKey) {
+  BakeCalcView.renderFormTabs(formKey, state);
+}
+
+function renderFormFields(formKey) {
+  BakeCalcView.renderFormFields(formKey, state);
 }
 
 function addIngredient() {
@@ -132,8 +145,8 @@ function deleteIngredient(id) {
   if (index === -1) return;
   state.ingredients.splice(index, 1);
   renderAllIngredients();
-  if (state.result) renderResults();
-  saveState();
+  invalidateResult();
+  updateTotals();
 }
 
 function onIngredientInput(id, field, value) {
@@ -141,8 +154,12 @@ function onIngredientInput(id, field, value) {
   if (!ingredient) return;
   ingredient[field] = ['amount', 'price', 'packageWeight'].includes(field) ? validateNumber(value, 0) : value;
   if (field === 'name') BakeCalcView.updatePriceName(id, value);
-  if (state.result) renderResults();
-  saveState();
+  invalidateResult();
+  updateTotals();
+}
+
+function renderAllIngredients() {
+  BakeCalcView.renderAllIngredients(state);
 }
 
 function addExtraCost() {
@@ -157,20 +174,40 @@ function deleteExtraCost(id) {
   if (index === -1) return;
   state.extraCosts.splice(index, 1);
   renderAllExtraCosts();
-  if (state.result) renderResults();
-  saveState();
+  invalidateResult();
+  updateTotals();
 }
 
 function onExtraCostInput(id, field, value) {
   const cost = state.extraCosts.find(item => item.id === id);
   if (!cost) return;
   cost[field] = field === 'amount' ? validateNumber(value, 0) : value;
+  invalidateResult();
   BakeCalcView.updateExtraCostsTotal(calculateExtraCostsTotal());
-  if (state.result) renderResults();
   saveState();
 }
 
-function onRecipeNameInput(value) { state.recipeName = value; saveState(); }
+function renderAllExtraCosts() {
+  BakeCalcView.renderAllExtraCosts(state, calculateExtraCostsTotal());
+}
+
+function renderResults() {
+  const costDetails = state.result ? calculateIngredientsCostDetails() : { total: 0, complete: false, issues: [] };
+  const extraCostsTotal = calculateExtraCostsTotal();
+  BakeCalcView.renderResults({
+    state,
+    totalWeight: calculateTotalWeight(),
+    ingredientsCost: costDetails.total,
+    extraCostsTotal,
+    costDetails,
+    priceCalcHref: buildPriceCalcUrl(costDetails)
+  });
+}
+
+function onRecipeNameInput(value) {
+  state.recipeName = value;
+  saveState();
+}
 
 function setFormType(formKey, type) {
   state[formKey].type = type;
@@ -188,32 +225,34 @@ function updateForm(formKey, field, value) {
 }
 
 function toggleHeight(formKey) {
-  if (formKey === 'original') state.useHeightOriginal = Boolean(document.getElementById('useHeightOriginal')?.checked);
-  else state.useHeightNew = Boolean(document.getElementById('useHeightNew')?.checked);
+  if (formKey === 'original') state.useHeightOriginal = document.getElementById('useHeightOriginal').checked;
+  else state.useHeightNew = document.getElementById('useHeightNew').checked;
   renderFormFields(formKey === 'original' ? 'originalForm' : 'newForm');
   invalidateResult('Режим высоты изменён. Выполните расчёт заново.');
   saveState();
   window.lucide?.createIcons();
 }
 
-function togglePricesAccordion() { BakeCalcView.togglePricesAccordion(); }
+function togglePricesAccordion() {
+  BakeCalcView.togglePricesAccordion();
+}
 
 function toggleRoundResults() {
   if (!state.result) return;
-  state.result.roundResults = Boolean(document.getElementById('roundResultsCheckbox')?.checked);
+  state.result.roundResults = document.getElementById('roundResultsCheckbox').checked;
   renderResults();
   saveState();
 }
 
 function calculateRecipe() {
   if (state.ingredients.length === 0) return showToast('Добавьте хотя бы один ингредиент');
-  if (state.ingredients.every(item => typeof item.name !== 'string' || !item.name.trim())) return showToast('Укажите названия ингредиентов');
+  if (state.ingredients.every(ingredient => typeof ingredient.name !== 'string' || !ingredient.name.trim())) return showToast('Укажите названия ингредиентов');
   const calculation = BakeCalcMath.coefficient(state);
   if (!calculation.ok) return showToast(calculation.error);
   state.result = { coefficient: calculation.value, roundResults: false, calculatedAt: new Date().toISOString() };
   renderResults();
   saveState();
-  setTimeout(() => document.getElementById('resultsSection')?.scrollIntoView({ behavior: 'smooth', block: 'start' }), 100);
+  setTimeout(() => document.getElementById('resultsSection').scrollIntoView({ behavior: 'smooth', block: 'start' }), 100);
 }
 
 function recalculate() {
@@ -267,7 +306,7 @@ function generateRecipeText() {
   const extraCostsTotal = calculateExtraCostsTotal();
   const totalCost = ingredientsCost + extraCostsTotal;
   if (totalCost > 0) text += `\n💰 СЕБЕСТОИМОСТЬ:\n• Ингредиенты: ${ingredientsCost.toFixed(2)} ₽\n${extraCostsTotal > 0 ? `• Доп. расходы: ${extraCostsTotal.toFixed(2)} ₽\n` : ''}• ИТОГО: ${totalCost.toFixed(2)} ₽\n`;
-  return `${text}\n═══════════════════════════════\n✨ Рассчитано в BakeCalc\n`;
+  return `${text}\n═══════════════════════════════\n✨ Рассчитано в KonditerCalc\n`;
 }
 
 async function copyRecipe() {

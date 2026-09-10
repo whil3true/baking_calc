@@ -3,11 +3,23 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="description" content="BakeCalc — набор бесплатных инструментов для кондитеров: пересчет рецептов, формы, крема, порций, желатина, единиц, себестоимости и цены продажи.">
-<title>BakeCalc — инструменты для кондитеров</title>
-<link rel="stylesheet" href="css/styles.css">
-<link rel="stylesheet" href="css/utilities.css">
-<script src="js/icons.js" defer></script>
+<title>Калькуляторы для кондитеров онлайн | KonditerCalc</title>
+<meta name="description" content="Бесплатные онлайн-калькуляторы для кондитеров: пересчёт рецепта, крем для торта, размер по гостям, желатин Bloom, конвертер ингредиентов и цена продажи.">
+<link rel="canonical" href="https://konditercalc.ru/">
+<meta property="og:locale" content="ru_RU">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="KonditerCalc">
+<meta property="og:title" content="Калькуляторы для кондитеров онлайн | KonditerCalc">
+<meta property="og:description" content="Бесплатные онлайн-калькуляторы для кондитеров: пересчёт рецепта, крем для торта, размер по гостям, желатин Bloom, конвертер ингредиентов и цена продажи.">
+<meta property="og:url" content="https://konditercalc.ru/">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Калькуляторы для кондитеров онлайн | KonditerCalc">
+<meta name="twitter:description" content="Бесплатные онлайн-калькуляторы для кондитеров: пересчёт рецепта, крем для торта, размер по гостям, желатин Bloom, конвертер ингредиентов и цена продажи.">
+<script id="konditercalc-structured-data" type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebSite","name":"KonditerCalc","url":"https://konditercalc.ru/","description":"Бесплатные онлайн-калькуляторы для кондитеров: пересчёт рецепта, крем для торта, размер по гостям, желатин Bloom, конвертер ингредиентов и цена продажи.","inLanguage":"ru"},{"@type":"ItemList","name":"Калькуляторы для кондитеров","itemListElement":[{"@type":"ListItem","position":1,"name":"Пересчёт рецепта под другую форму","url":"https://konditercalc.ru/pereschet-recepta/"},{"@type":"ListItem","position":2,"name":"Калькулятор крема для торта","url":"https://konditercalc.ru/raschet-krema-dlya-torta/"},{"@type":"ListItem","position":3,"name":"Размер торта по количеству гостей","url":"https://konditercalc.ru/razmer-torta-po-gostyam/"},{"@type":"ListItem","position":4,"name":"Пересчёт желатина по Bloom","url":"https://konditercalc.ru/pereschet-zhelatina-bloom/"},{"@type":"ListItem","position":5,"name":"Конвертер ингредиентов","url":"https://konditercalc.ru/konverter-ingredientov/"},{"@type":"ListItem","position":6,"name":"Калькулятор цены торта и десерта","url":"https://konditercalc.ru/raschet-ceny-torta/"}]}]}</script>
+
+<link rel="stylesheet" href="/css/styles.css">
+<link rel="stylesheet" href="/css/utilities.css">
+<script src="/js/icons.js" defer></script>
 </head>
 <body class="min-h-screen bg-cream text-dark font-sans">
 <header class="sticky top-0 z-30 bg-cream/90 backdrop-blur-md border-b border-soft">
@@ -17,7 +29,7 @@
         <i data-lucide="cake-slice" class="w-6 h-6 text-white"></i>
       </div>
       <div>
-        <h1 class="text-xl md:text-2xl font-bold tracking-tight">BakeCalc</h1>
+        <h1 class="text-xl md:text-2xl font-bold tracking-tight">KonditerCalc</h1>
         <p class="text-xs md:text-sm text-dark/60">Инструменты для кондитеров</p>
       </div>
     </div>
@@ -28,44 +40,44 @@
     <div class="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-soft mb-4">
       <i data-lucide="calculator" class="w-7 h-7 text-caramel"></i>
     </div>
-    <h2 class="text-2xl md:text-4xl font-bold tracking-tight mb-3">Что будем считать?</h2>
-    <p class="text-sm md:text-base text-dark/60">Шесть практичных калькуляторов для повседневной работы кондитера.</p>
+    <h2 class="text-2xl md:text-4xl font-bold tracking-tight mb-3">Бесплатные калькуляторы для кондитеров</h2>
+    <p class="text-sm md:text-base text-dark/60">Пересчитывайте рецепты и крем, подбирайте размер торта, работайте с желатином и ингредиентами, считайте себестоимость и цену продажи.</p>
   </section>
 
   <section aria-labelledby="tools-title">
-    <h2 id="tools-title" class="sr-only">Инструменты BakeCalc</h2>
+    <h2 id="tools-title" class="sr-only">Инструменты KonditerCalc</h2>
     <div class="grid grid-cols-2 md:grid-cols-3 gap-3 md:gap-5">
-      <a href="bakecalc.html" class="tool-tile group" aria-label="BakeCalc — пересчет рецепта и себестоимость">
+      <a href="/pereschet-recepta/" class="tool-tile group" aria-label="Пересчёт рецепта под другую форму и себестоимость">
         <div class="tool-icon"><i data-lucide="cake-slice"></i></div>
-        <h3 class="tool-title">BakeCalc</h3>
+        <h3 class="tool-title">Пересчёт рецепта</h3>
         <p class="tool-description">Пересчет рецепта под другую форму и расчет себестоимости</p>
         <span class="tool-status">Открыть</span>
       </a>
-      <a href="creamcalc.html" class="tool-tile group" aria-label="CreamCalc — расчёт крема для торта">
+      <a href="/raschet-krema-dlya-torta/" class="tool-tile group" aria-label="Калькулятор крема для торта">
         <div class="tool-icon"><i data-lucide="cup-soda"></i></div>
-        <h3 class="tool-title">CreamCalc</h3>
+        <h3 class="tool-title">Крем для торта</h3>
         <p class="tool-description">Крем для прослоек, верха и боков торта с учетом запаса</p>
         <span class="tool-status">Открыть</span>
       </a>
-      <a href="portioncalc.html" class="tool-tile group" aria-label="Калькулятор порций — размер торта по количеству гостей">
+      <a href="/razmer-torta-po-gostyam/" class="tool-tile group" aria-label="Калькулятор порций — размер торта по количеству гостей">
         <div class="tool-icon"><i data-lucide="users"></i></div>
-        <h3 class="tool-title">Порции</h3>
+        <h3 class="tool-title">Размер торта</h3>
         <p class="tool-description">Расчет размера торта по количеству гостей</p>
         <span class="tool-status">Открыть</span>
       </a>
-      <a href="gelatincalc.html" class="tool-tile group" aria-label="GelatinCalc — пересчёт желатина по силе Bloom">
+      <a href="/pereschet-zhelatina-bloom/" class="tool-tile group" aria-label="Пересчёт желатина по силе Bloom">
         <div class="tool-icon"><i data-lucide="flask-conical"></i></div>
         <h3 class="tool-title">Желатин</h3>
         <p class="tool-description">Пересчёт Bloom и воды для гидратации желатина</p>
         <span class="tool-status">Открыть</span>
       </a>
-      <a href="convertercalc.html" class="tool-tile group" aria-label="Конвертер ингредиентов — масса, объём и плотность">
+      <a href="/konverter-ingredientov/" class="tool-tile group" aria-label="Конвертер ингредиентов — масса, объём и плотность">
         <div class="tool-icon"><i data-lucide="arrow-left-right"></i></div>
         <h3 class="tool-title">Конвертер</h3>
         <p class="tool-description">Граммы, килограммы, миллилитры и литры с учётом плотности</p>
         <span class="tool-status">Открыть</span>
       </a>
-      <a href="pricecalc.html" class="tool-tile group" aria-label="Цена продажи — себестоимость, работа, комиссия и прибыль">
+      <a href="/raschet-ceny-torta/" class="tool-tile group" aria-label="Цена продажи — себестоимость, работа, комиссия и прибыль">
         <div class="tool-icon"><i data-lucide="badge-russian-ruble"></i></div>
         <h3 class="tool-title">Цена продажи</h3>
         <p class="tool-description">Цена с учетом себестоимости, работы, комиссии и прибыли</p>
@@ -74,14 +86,21 @@
     </div>
   </section>
 
+
+  <section class="card p-5 md:p-6 mt-8 md:mt-10" aria-labelledby="about-calculators-title">
+    <h2 id="about-calculators-title" class="text-xl md:text-2xl font-bold mb-3">Кондитерские расчёты без таблиц и ручных формул</h2>
+    <p class="text-sm md:text-base text-dark/70 mb-3">KonditerCalc — бесплатный набор онлайн-инструментов для домашних кондитеров и тех, кто готовит десерты на заказ. Каждый калькулятор решает отдельную практическую задачу и работает прямо в браузере.</p>
+    <p class="text-sm md:text-base text-dark/70">Начните с пересчёта рецепта под форму, а затем при необходимости передайте рассчитанную себестоимость в калькулятор цены продажи. Для крема, порций, желатина и перевода единиц есть отдельные инструменты.</p>
+  </section>
+
   <section class="mt-8 md:mt-10 text-center">
-    <p class="text-xs text-dark/40">BakeCalc — набор простых бесплатных инструментов для кондитеров.</p>
+    <p class="text-xs text-dark/40">KonditerCalc — набор простых бесплатных инструментов для кондитеров.</p>
   </section>
 </main>
 <script>
   document.addEventListener('DOMContentLoaded', () => window.lucide?.createIcons());
 </script>
-<script src="js/analytics.js"></script>
+<script src="/js/analytics.js"></script>
 <noscript><div><img src="https://mc.yandex.ru/watch/112356971" style="position:absolute; left:-9999px;" alt="" /></div></noscript>
 </body>
 </html>

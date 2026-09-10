@@ -8,8 +8,8 @@ async function assertSeo(page, name) {
   const canonical = page.locator('link[rel="canonical"]');
   await canonical.waitFor({ state: 'attached' });
   const href = await canonical.getAttribute('href');
-  assert.ok(href?.startsWith('https://whil3true.github.io/baking_calc/'), `${name}: canonical URL missing`);
-  const structured = page.locator('#bakecalc-structured-data');
+  assert.ok(href?.startsWith('https://konditercalc.ru/'), `${name}: canonical URL missing`);
+  const structured = page.locator('#konditercalc-structured-data');
   await structured.waitFor({ state: 'attached' });
   const json = await structured.textContent();
   assert.doesNotThrow(() => JSON.parse(json || ''), `${name}: invalid JSON-LD`);
@@ -38,7 +38,7 @@ async function runBakeCalcDelegatedEvents() {
   const pageErrors = [];
   page.on('pageerror', error => pageErrors.push(error.message));
   try {
-    await page.goto(`${baseURL}/bakecalc.html`, { waitUntil: 'domcontentloaded' });
+    await page.goto(`${baseURL}/pereschet-recepta/`, { waitUntil: 'domcontentloaded' });
 
     await page.getByRole('button', { name: 'Добавить ингредиент' }).click();
     const ingredientRow = page.locator('#ingredientsBody tr').last();
@@ -66,21 +66,21 @@ async function runBakeCalcPriceCalcIntegration() {
   const pageErrors = [];
   page.on('pageerror', error => pageErrors.push(error.message));
   try {
-    await page.goto(`${baseURL}/bakecalc.html`, { waitUntil: 'domcontentloaded' });
+    await page.goto(`${baseURL}/pereschet-recepta/`, { waitUntil: 'domcontentloaded' });
     await page.getByRole('button', { name: 'Загрузить тестовый рецепт' }).click();
     await page.getByRole('button', { name: 'Рассчитать новый рецепт' }).click();
 
     const transferLink = page.locator('#openPriceCalc');
     await transferLink.waitFor({ state: 'visible' });
     const href = await transferLink.getAttribute('href');
-    assert.match(href || '', /^pricecalc\.html\?/);
+    assert.match(href || '', /^\/raschet-ceny-torta\/\?/);
     assert.match(href || '', /source=bakecalc/);
     assert.match(href || '', /ingredientsCost=/);
     assert.match(href || '', /packagingCost=/);
     assert.match(href || '', /extraCost=/);
 
     await transferLink.click();
-    await page.waitForURL(url => url.pathname.endsWith('/pricecalc.html'));
+    await page.waitForURL(url => url.pathname.endsWith('/raschet-ceny-torta/'));
     await page.locator('#priceForm').waitFor({ state: 'visible' });
 
     const ingredientsCost = Number(await page.locator('#ingredientsCost').inputValue());
@@ -89,7 +89,7 @@ async function runBakeCalcPriceCalcIntegration() {
     assert.ok(ingredientsCost > 0, 'BakeCalc → PriceCalc: ingredient cost was not transferred');
     assert.ok(extraCost > 0, 'BakeCalc → PriceCalc: extra cost was not transferred');
     assert.ok(packagingCost > 0, 'BakeCalc → PriceCalc: packaging cost was not transferred');
-    assert.match(await page.locator('#priceStatus').textContent() || '', /перенесена из BakeCalc/i);
+    assert.match(await page.locator('#priceStatus').textContent() || '', /перенесена из KonditerCalc/i);
     assert.equal(new URL(page.url()).search, '', 'BakeCalc → PriceCalc: transfer query should be cleaned after import');
     assert.deepEqual(pageErrors, [], `BakeCalc → PriceCalc: browser JavaScript errors: ${pageErrors.join(' | ')}`);
     console.log(`✓ BakeCalc → PriceCalc: ingredients ${ingredientsCost} ₽, packaging ${packagingCost} ₽, extras ${extraCost} ₽`);
@@ -99,20 +99,20 @@ async function runBakeCalcPriceCalcIntegration() {
 }
 
 try {
-  await runSmoke('BakeCalc', 'bakecalc.html', async page => {
+  await runSmoke('BakeCalc', 'pereschet-recepta/', async page => {
     await page.getByRole('button', { name: 'Загрузить тестовый рецепт' }).click();
     await page.getByRole('button', { name: 'Рассчитать новый рецепт' }).click();
   }, '#resultsSection', '#resultCoefficientBadge');
 
   await runBakeCalcDelegatedEvents();
-  await runSmoke('CreamCalc', 'creamcalc.html', page => page.getByRole('button', { name: 'Рассчитать крем' }).click(), '#creamResults', '#creamPrepare');
-  await runSmoke('PortionCalc', 'portioncalc.html', page => page.getByRole('button', { name: 'Рассчитать размер торта' }).click(), '#portionResults', '#portionRecommendedSize');
-  await runSmoke('GelatinCalc', 'gelatincalc.html', page => page.getByRole('button', { name: 'Пересчитать желатин' }).click(), '#gelatinResults', '#gelatinConverted');
-  await runSmoke('ConverterCalc', 'convertercalc.html', async page => {
+  await runSmoke('CreamCalc', 'raschet-krema-dlya-torta/', page => page.getByRole('button', { name: 'Рассчитать крем' }).click(), '#creamResults', '#creamPrepare');
+  await runSmoke('PortionCalc', 'razmer-torta-po-gostyam/', page => page.getByRole('button', { name: 'Рассчитать размер торта' }).click(), '#portionResults', '#portionRecommendedSize');
+  await runSmoke('GelatinCalc', 'pereschet-zhelatina-bloom/', page => page.getByRole('button', { name: 'Пересчитать желатин' }).click(), '#gelatinResults', '#gelatinConverted');
+  await runSmoke('ConverterCalc', 'konverter-ingredientov/', async page => {
     await page.locator('#density').fill('0.8');
     await page.getByRole('button', { name: 'Конвертировать' }).click();
   }, '#converterResults', '#converterResultValue');
-  await runSmoke('PriceCalc', 'pricecalc.html', page => page.getByRole('button', { name: 'Рассчитать цену' }).click(), '#priceResults', '#priceSalePrice');
+  await runSmoke('PriceCalc', 'raschet-ceny-torta/', page => page.getByRole('button', { name: 'Рассчитать цену' }).click(), '#priceResults', '#priceSalePrice');
   await runBakeCalcPriceCalcIntegration();
 } finally {
   await browser.close();

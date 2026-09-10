@@ -4,7 +4,7 @@ const fs = require('node:fs');
 const path = require('node:path');
 const ConverterCalc = require('../js/convertercalc-math.js');
 
-const html = fs.readFileSync(path.join(__dirname, '..', 'convertercalc.html'), 'utf8');
+const html = fs.readFileSync(path.join(__dirname, '..', 'konverter-ingredientov/index.html'), 'utf8');
 const controller = fs.readFileSync(path.join(__dirname, '..', 'js', 'convertercalc.js'), 'utf8');
 
 function hasId(id) {
