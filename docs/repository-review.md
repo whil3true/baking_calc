@@ -8,12 +8,12 @@
 
 | Инструмент | Страница | Состояние |
 | --- | --- | --- |
-| BakeCalc | `bakecalc.html` | Пересчёт рецепта, форм и себестоимости |
-| CreamCalc | `creamcalc.html` | Расчёт крема для прослоек и покрытия |
-| PortionCalc | `portioncalc.html` | Размер торта по гостям и геометрии кусочка |
-| GelatinCalc | `gelatincalc.html` | Пересчёт Bloom и гидратации желатина |
-| ConverterCalc | `convertercalc.html` | г/кг/мл/л и масса ↔ объём через плотность |
-| PriceCalc | `pricecalc.html` | Цена продажи, работа, комиссия, прибыль и маржа |
+| BakeCalc | `/pereschet-recepta/` | Пересчёт рецепта, форм и себестоимости |
+| CreamCalc | `/raschet-krema-dlya-torta/` | Расчёт крема для прослоек и покрытия |
+| PortionCalc | `/razmer-torta-po-gostyam/` | Размер торта по гостям и геометрии кусочка |
+| GelatinCalc | `/pereschet-zhelatina-bloom/` | Пересчёт Bloom и гидратации желатина |
+| ConverterCalc | `/konverter-ingredientov/` | г/кг/мл/л и масса ↔ объём через плотность |
+| PriceCalc | `/raschet-ceny-torta/` | Цена продажи, работа, комиссия, прибыль и маржа |
 
 Все страницы имеют возврат в каталог. На главной нет карточек-заглушек «Скоро».
 
@@ -48,7 +48,7 @@ BakeCalc больше не использует compatibility/monkey-patch сл�
 
 Добавлен общий `js/seo.js`, который централизованно задаёт для каталога и всех шести калькуляторов уникальные title/description, canonical URL, Open Graph, Twitter metadata и JSON-LD.
 
-Публичная база canonical URL: `https://whil3true.github.io/baking_calc/`. В репозитории нет `CNAME`, поэтому SEO-файлы ориентированы на стандартный адрес GitHub Pages. При подключении собственного домена этот базовый URL нужно заменить централизованно в `js/seo.js`, `robots.txt`, `sitemap.xml` и соответствующем SEO-тесте.
+Публичная база canonical URL: `https://konditercalc.ru/`. В репозитории есть `CNAME` для `konditercalc.ru`; критические SEO-метаданные находятся непосредственно в HTML, а `robots.txt` и `sitemap.xml` используют тот же основной домен.
 
 Также добавлены `robots.txt`, `sitemap.xml`, unit-проверка SEO-конфигурации и browser-smoke canonical/JSON-LD.
 

@@ -3,119 +3,18 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="description" content="Калькулятор порций BakeCalc — расчёт рекомендуемого размера круглого или прямоугольного торта по количеству гостей и размеру одного кусочка.">
-<title>Порции — размер торта по количеству гостей | BakeCalc</title>
-<link rel="stylesheet" href="css/styles.css">
-<link rel="stylesheet" href="css/utilities.css">
-<script src="js/icons.js" defer></script>
-<script src="js/portioncalc-math.js?v=4" defer></script>
-<script src="js/portioncalc.js?v=4" defer></script>
-<style>
-  .portion-shape-card { border: 1px solid #E8E2D5; border-radius: 1rem; padding: 1rem; cursor: pointer; background: #fff; transition: border-color .2s, background .2s; }
-  .portion-shape-card:hover { border-color: #D97736; }
-  .portion-shape-active { border-color: #D97736; background: #FFF8F2; }
-  .portion-shape-card input { position: absolute; opacity: 0; pointer-events: none; }
-</style>
+<title>Страница переехала | KonditerCalc</title>
+<meta name="robots" content="noindex,follow">
+<link rel="canonical" href="https://konditercalc.ru/razmer-torta-po-gostyam/">
+<meta http-equiv="refresh" content="0; url=/razmer-torta-po-gostyam/">
+<script>
+(function () {
+  var target = '/razmer-torta-po-gostyam/' + window.location.search + window.location.hash;
+  window.location.replace(target);
+})();
+</script>
 </head>
-<body class="min-h-screen bg-cream text-dark font-sans">
-<header class="sticky top-0 z-30 bg-cream/90 backdrop-blur-md border-b border-soft">
-  <div class="max-w-3xl mx-auto px-4 py-3">
-    <nav aria-label="Навигация инструмента" class="mb-3"><a href="index.html" class="home-link"><span aria-hidden="true">←</span> На главную</a></nav>
-    <div class="flex items-center justify-between gap-3">
-      <div class="flex items-center gap-3 min-w-0">
-        <div class="w-11 h-11 rounded-2xl bg-gradient-to-br from-caramel to-terracotta flex items-center justify-center shrink-0 shadow-sm" aria-hidden="true"><i data-lucide="users" class="w-6 h-6 text-white"></i></div>
-        <div class="min-w-0"><h1 class="text-xl md:text-2xl font-bold tracking-tight">Порции</h1><p class="text-xs md:text-sm text-dark/60">Размер торта по количеству гостей</p></div>
-      </div>
-      <button type="reset" form="portionForm" class="btn-ghost px-3 py-2 rounded-xl text-sm font-medium shrink-0">Сбросить</button>
-    </div>
-  </div>
-</header>
-<main class="max-w-3xl mx-auto px-4 py-5 md:py-8 space-y-5">
-  <p class="text-sm text-dark/60">Сначала выберите форму торта, затем задайте размер одного кусочка. Калькулятор сам подберёт рекомендуемый размер торта.</p>
-  <noscript><p class="card p-5">Для расчёта включите JavaScript. Ссылка «На главную» работает и без него.</p></noscript>
-
-  <form id="portionForm" class="space-y-5" novalidate>
-    <section class="card p-5 md:p-6" aria-labelledby="portion-form-title">
-      <div class="flex items-start gap-3 mb-5"><span class="step-number" aria-hidden="true">1</span><div><h2 id="portion-form-title" class="text-lg font-semibold">Форма торта</h2><p class="text-sm text-dark/60 mt-1">Выберите форму. Здесь же показана предполагаемая схема нарезки.</p></div></div>
-      <fieldset>
-        <legend class="sr-only">Форма торта</legend>
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-          <label id="roundShapeCard" class="portion-shape-card portion-shape-active relative">
-            <input type="radio" name="shape" value="circle" checked>
-            <div class="flex items-center gap-4">
-              <svg viewBox="0 0 72 72" class="w-16 h-16 shrink-0 text-caramel" aria-hidden="true"><circle cx="36" cy="36" r="28" fill="none" stroke="currentColor" stroke-width="2"/><path d="M36 36 L36 8 M36 36 L60 22 M36 36 L64 42 M36 36 L50 61 M36 36 L22 60 M36 36 L9 42 M36 36 L13 21" fill="none" stroke="currentColor" stroke-width="1.6"/></svg>
-              <div><p class="font-semibold">Круглая</p><p class="text-xs text-dark/60 mt-1">Клиновидные кусочки</p></div>
-            </div>
-          </label>
-          <label id="rectShapeCard" class="portion-shape-card relative">
-            <input type="radio" name="shape" value="rect">
-            <div class="flex items-center gap-4">
-              <svg viewBox="0 0 72 72" class="w-16 h-16 shrink-0 text-caramel" aria-hidden="true"><rect x="9" y="13" width="54" height="46" rx="2" fill="none" stroke="currentColor" stroke-width="2"/><path d="M27 13 V59 M45 13 V59 M9 36 H63" fill="none" stroke="currentColor" stroke-width="1.6"/></svg>
-              <div><p class="font-semibold">Прямоугольная</p><p class="text-xs text-dark/60 mt-1">Нарезка сеткой</p></div>
-            </div>
-          </label>
-        </div>
-      </fieldset>
-    </section>
-
-    <section class="card p-5 md:p-6" aria-labelledby="portion-size-title">
-      <div class="flex items-start gap-3 mb-5"><span class="step-number" aria-hidden="true">2</span><div><h2 id="portion-size-title" class="text-lg font-semibold">Размер одного кусочка</h2><p id="portionPieceText" class="text-sm text-dark/60 mt-1">Укажите длину клина от центра к краю и его ширину по внешнему краю.</p></div></div>
-      <div class="rounded-2xl bg-soft/60 p-4 mb-4 flex items-center gap-4">
-        <div id="roundPiecePreview">
-          <svg viewBox="0 0 80 64" class="w-20 h-16 text-caramel" aria-hidden="true"><path d="M10 52 L40 10 L70 52 Z" fill="none" stroke="currentColor" stroke-width="2"/><path d="M40 10 V52" stroke="currentColor" stroke-width="1.5" stroke-dasharray="3 3"/></svg>
-        </div>
-        <div id="rectPiecePreview" hidden>
-          <svg viewBox="0 0 80 64" class="w-20 h-16 text-caramel" aria-hidden="true"><rect x="12" y="12" width="56" height="40" rx="2" fill="none" stroke="currentColor" stroke-width="2"/></svg>
-        </div>
-        <div><p id="portionPieceTitle" class="font-semibold text-sm">Клиновидный кусочек</p><p class="text-xs text-dark/60 mt-1">Для круга площадь кусочка оценивается как площадь треугольника.</p></div>
-      </div>
-      <div class="grid grid-cols-2 gap-3">
-        <label class="block"><span id="portionLengthLabel" class="cream-label">Длина клина, см</span><input id="portionLength" name="portionLength" type="text" inputmode="decimal" maxlength="32" value="10" class="input-field w-full" required></label>
-        <label class="block"><span id="portionWidthLabel" class="cream-label">Ширина клина, см</span><input id="portionWidth" name="portionWidth" type="text" inputmode="decimal" maxlength="32" value="5" class="input-field w-full" required></label>
-      </div>
-    </section>
-
-    <section class="card p-5 md:p-6" aria-labelledby="portion-people-title">
-      <div class="flex items-start gap-3 mb-5"><span class="step-number" aria-hidden="true">3</span><div><h2 id="portion-people-title" class="text-lg font-semibold">Гости и запас</h2><p class="text-sm text-dark/60 mt-1">Запас нужен на дополнительные или более щедрые порции.</p></div></div>
-      <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-        <label class="block"><span class="cream-label">Количество гостей</span><input id="guests" name="guests" type="text" inputmode="numeric" maxlength="4" value="20" class="input-field w-full" required></label>
-        <label class="block"><span class="cream-label">Запас, %</span><input id="reserve" name="reserve" type="text" inputmode="decimal" maxlength="5" value="10" class="input-field w-full" required></label>
-      </div>
-    </section>
-
-    <div id="portionErrors" class="cream-errors" role="alert" tabindex="-1" hidden></div>
-    <button type="submit" class="w-full btn-primary py-4 rounded-2xl font-bold text-lg flex items-center justify-center gap-2"><i data-lucide="calculator" class="w-5 h-5" aria-hidden="true"></i>Рассчитать размер торта</button>
-  </form>
-
-  <p id="portionStatus" role="status" class="text-sm text-dark/60"></p>
-  <section id="portionResults" class="card p-5 md:p-6 cream-results" aria-labelledby="portion-result-title" tabindex="-1" hidden>
-    <p class="text-sm text-dark/60 mb-1">Рекомендуемый размер</p>
-    <h2 id="portion-result-title" class="text-lg font-semibold">Торт для заданного количества гостей</h2>
-    <p id="portionRecommendedSize" class="text-4xl md:text-5xl font-bold text-caramel mt-2 mb-3"></p>
-    <p id="portionSummary" class="text-sm text-dark/60 mb-5"></p>
-    <dl class="cream-breakdown">
-      <div><dt>Заложено порций</dt><dd id="portionTarget"></dd></div>
-      <div><dt>Расчётная вместимость</dt><dd id="portionCapacity"></dd></div>
-      <div><dt>Запас сверх гостей</dt><dd id="portionExtra"></dd></div>
-      <div><dt>Размер кусочка</dt><dd id="portionSlice"></dd></div>
-      <div><dt>Нарезка</dt><dd id="portionCut"></dd></div>
-      <div><dt>Минимальная площадь торта</dt><dd id="portionArea"></dd></div>
-    </dl>
-    <p class="text-xs text-dark/60 mt-4 leading-relaxed">Для круглого торта клиновидный кусочек приближён треугольником. Для прямоугольного используется площадь прямоугольного кусочка. Это геометрическая оценка без учёта высоты торта.</p>
-    <button id="copyPortion" type="button" class="btn-primary w-full rounded-xl py-3 font-semibold mt-5">Скопировать расчёт</button>
-  </section>
-
-  <details class="card p-5 md:p-6 text-sm">
-    <summary class="font-semibold cursor-pointer">Как считается размер?</summary>
-    <div class="mt-3 space-y-3 text-dark/70 leading-relaxed">
-      <p>Круг: площадь одного клина ≈ длина × ширина / 2. Затем суммарная площадь порций переводится в площадь круга и диаметр округляется вверх.</p>
-      <p>Прямоугольник: площадь одного кусочка = длина × ширина. Калькулятор сам подбирает компактные целочисленные стороны торта, без дополнительных настроек формы.</p>
-      <p>Количество порций сначала увеличивается на выбранный процент запаса.</p>
-    </div>
-  </details>
-  <footer class="text-center py-3"><a href="index.html" class="home-link"><span aria-hidden="true">←</span> На главную</a></footer>
-</main>
-<script src="js/analytics.js"></script>
-<noscript><div><img src="https://mc.yandex.ru/watch/112356971" style="position:absolute; left:-9999px;" alt="" /></div></noscript>
+<body>
+<p>Страница переехала: <a href="/razmer-torta-po-gostyam/">Размер торта по количеству гостей</a>.</p>
 </body>
 </html>

@@ -93,7 +93,7 @@ function priceCalcHref(details) {
     extraCost: extras.extraCost.toFixed(2)
   });
   if (state.recipeName.trim()) params.set('recipe', state.recipeName.trim());
-  return `pricecalc.html?${params.toString()}`;
+  return `/raschet-ceny-torta/?${params.toString()}`;
 }
 
 function invalidateResult(message = '') {

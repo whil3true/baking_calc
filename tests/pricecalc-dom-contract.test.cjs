@@ -4,7 +4,7 @@ const fs = require('node:fs');
 const path = require('node:path');
 const PriceCalc = require('../js/pricecalc-math.js');
 
-const html = fs.readFileSync(path.join(__dirname, '..', 'pricecalc.html'), 'utf8');
+const html = fs.readFileSync(path.join(__dirname, '..', 'raschet-ceny-torta/index.html'), 'utf8');
 const controller = fs.readFileSync(path.join(__dirname, '..', 'js', 'pricecalc.js'), 'utf8');
 
 function hasId(id) {

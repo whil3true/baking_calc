@@ -4,7 +4,7 @@ const fs = require('node:fs');
 const path = require('node:path');
 const PortionCalc = require('../js/portioncalc-math.js');
 
-const html = fs.readFileSync(path.join(__dirname, '..', 'portioncalc.html'), 'utf8');
+const html = fs.readFileSync(path.join(__dirname, '..', 'razmer-torta-po-gostyam/index.html'), 'utf8');
 const controller = fs.readFileSync(path.join(__dirname, '..', 'js', 'portioncalc.js'), 'utf8');
 
 function hasId(id) {
