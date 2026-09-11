@@ -1,6 +1,9 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="KonditerCalc">
-  <rect width="64" height="64" rx="16" fill="#D97736"/>
-  <path d="M17 42h31L40 23 17 42Z" fill="#fff"/>
-  <path d="M24 36h20" fill="none" stroke="#D97736" stroke-width="3.5" stroke-linecap="round"/>
-  <circle cx="34" cy="20" r="3.2" fill="#fff"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" role="img" aria-label="KonditerCalc">
+  <rect width="24" height="24" rx="5" fill="#D97736"/>
+  <g fill="none" stroke="#fff" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M16 13H3"/>
+    <path d="M16 17H3"/>
+    <path d="m7.2 7.9-3.388 2.5A2 2 0 0 0 3 12.01V20a1 1 0 0 0 1 1h16a1 1 0 0 0 1-1v-8.654c0-2-2.44-6.026-6.44-8.026a1 1 0 0 0-1.082.057L10.4 5.6"/>
+    <circle cx="9" cy="7" r="2"/>
+  </g>
 </svg>
