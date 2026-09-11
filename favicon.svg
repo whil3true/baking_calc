@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="KonditerCalc">
+  <rect width="64" height="64" rx="16" fill="#D97736"/>
+  <path d="M17 42h31L40 23 17 42Z" fill="#fff"/>
+  <path d="M24 36h20" fill="none" stroke="#D97736" stroke-width="3.5" stroke-linecap="round"/>
+  <circle cx="34" cy="20" r="3.2" fill="#fff"/>
+</svg>
